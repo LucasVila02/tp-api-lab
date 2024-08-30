@@ -1,5 +1,6 @@
 package com.lucasvila.tp_api.entities;
 
+import com.lucasvila.tp_api.dto.EmpleadoDto;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -23,5 +24,17 @@ public class Empleado {
     private LocalDate fechaNacimiento;
     private LocalDate fechaIngreso;
     private LocalDate fechaCreacion;
+
+    public EmpleadoDto toDTO() {
+        EmpleadoDto dto = new EmpleadoDto();
+        dto.setNombre(this.nombre);
+        dto.setApellido(this.apellido);
+        dto.setEmail(this.email);
+        dto.setFechaIngreso(this.fechaIngreso);
+        dto.setNumeroDocumento(this.numeroDocumento);
+        dto.setFechaNacimiento(this.fechaNacimiento);
+        dto.setFechaCreacion(this.fechaCreacion);
+        return dto;
+    }
 
 }

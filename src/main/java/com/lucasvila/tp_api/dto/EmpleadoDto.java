@@ -1,6 +1,6 @@
 package com.lucasvila.tp_api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
+import com.lucasvila.tp_api.validation.anotation.ValidName;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -16,17 +16,16 @@ public class EmpleadoDto {
     @NotNull(message = "'numero_documento' es obligatorio.")
     private Integer numeroDocumento;
 
+    @ValidName(message = "Solo se permiten letras en el campo ‘nombre’.")
     @NotBlank(message = "'nombre' es obligatorio.")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Solo se permiten letras en el campo ‘nombre’.")
     private String nombre;
 
-    @NotBlank(message = "'apellido' es obligatorio.")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Solo se permiten letras en el campo ‘apellido’.")
+    @ValidName(message = "Solo se permiten letras en el campo ‘apellido’.")
+    @NotBlank(message = "'apellido' es obligatorio")
     private String apellido;
 
     @NotBlank(message = "'email' es obligatorio.")
-    @Email(message = "El email ingresado no es correcto.")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com$", message = "El email debe terminar con '.com'.")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com$", message = "El email debe  contener '@',  y terminar con '.com'.")
     private String email;
 
     @JsonProperty("fecha_nacimiento")

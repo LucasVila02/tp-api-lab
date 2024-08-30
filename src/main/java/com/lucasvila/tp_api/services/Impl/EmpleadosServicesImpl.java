@@ -2,6 +2,10 @@ package com.lucasvila.tp_api.services.Impl;
 
 import com.lucasvila.tp_api.dto.EmpleadoDto;
 import com.lucasvila.tp_api.entities.Empleado;
+import com.lucasvila.tp_api.exceptions.EdadInvalidaException;
+import com.lucasvila.tp_api.exceptions.EmpleadoDuplicadoException;
+import com.lucasvila.tp_api.exceptions.EmpleadoNoEncontradoException;
+import com.lucasvila.tp_api.exceptions.FechaInvalidaException;
 import com.lucasvila.tp_api.repositories.EmpleadosRepository;
 import com.lucasvila.tp_api.services.EmpleadosServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +36,8 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
     public Optional<Empleado> findById(Long id) {
         Optional<Empleado> optionalEmpleados = repository.findById(id);
 
-        if (optionalEmpleados.isPresent()) {
-            return repository.findById(id);
+        if (optionalEmpleados.isEmpty()) {
+            throw new EmpleadoNoEncontradoException(id);
         }
         return optionalEmpleados;
     }
@@ -44,28 +48,25 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
         // Validación de documento duplicado
         if (repository.existsByNumeroDocumento(empleadoDto.getNumeroDocumento())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un empleado con el documento ingresado.");
+            throw new EmpleadoDuplicadoException( "Ya existe un empleado con el documento ingresado.");
         }
-
         // Validación de email duplicado
         if (repository.existsByEmail(empleadoDto.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un empleado con el email ingresado.");
-        }
-
-        // Validación de fecha de nacimiento
-        if (empleadoDto.getFechaNacimiento().isAfter(LocalDate.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha de nacimiento no puede ser posterior al día de la fecha.");
+            throw new EmpleadoDuplicadoException( "Ya existe un empleado con el email ingresado.");
         }
 
         // Validación de fecha de ingreso
         if (empleadoDto.getFechaIngreso().isAfter(LocalDate.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha de ingreso no puede ser posterior al día de la fecha.");
+            throw new FechaInvalidaException("La fecha de ingreso no puede ser posterior al día de la fecha.");
         }
-
         // Validación de edad
         int edad = Period.between(empleadoDto.getFechaNacimiento(), LocalDate.now()).getYears();
         if (edad < 18) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La edad del empleado no puede ser menor a 18 años.");
+            throw new EdadInvalidaException("La edad del empleado no puede ser menor a 18 años.");
+        }
+        // Validación de fecha de nacimiento
+        if (empleadoDto.getFechaNacimiento().isAfter(LocalDate.now())) {
+            throw new FechaInvalidaException("La fecha de nacimiento no puede ser posterior al día de la fecha.");
         }
 
         // Mapeo de DTO a entidad y guardado
