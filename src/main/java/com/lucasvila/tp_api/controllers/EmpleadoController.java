@@ -2,6 +2,7 @@ package com.lucasvila.tp_api.controllers;
 
 import com.lucasvila.tp_api.dto.EmpleadoDto;
 import com.lucasvila.tp_api.entities.Empleado;
+import com.lucasvila.tp_api.exceptions.EmpleadoNoEncontradoException;
 import com.lucasvila.tp_api.services.EmpleadosServices;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -24,39 +25,44 @@ public class EmpleadoController {
     private EmpleadosServices services;
 
     @GetMapping("/empleado")
-    public List<Empleado> findAll(){
+    public List<EmpleadoDto> findAll(){
         return services.findAll();
     }
 
     @GetMapping("/empleado/{id}")
-    public ResponseEntity<?> findById(/*@NotNull*/ @PathVariable Long id){
+    public ResponseEntity<EmpleadoDto> findById(/*@NotNull*/ @PathVariable Long id){
         Optional<Empleado> empleadosOptional = services.findById(id);
 
         if (empleadosOptional.isPresent()){
-            return ResponseEntity.ok(empleadosOptional.orElseThrow());
+            EmpleadoDto empleadoDto = empleadosOptional.get().toDTO();
+            return ResponseEntity.ok(empleadoDto);
         }
         return ResponseEntity.notFound().build();
+
     }
 
     @PostMapping("/empleado")
-    public ResponseEntity<?> create(@Valid @RequestBody  EmpleadoDto empleado /*BindingResult result*/){
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(services.create(empleado));
+    public ResponseEntity<EmpleadoDto> create(@Valid @RequestBody  EmpleadoDto empleado /*BindingResult result*/){
+        EmpleadoDto creado =services.create(empleado) ;
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
     @PutMapping("/empleado/{id}")
-    public ResponseEntity<Empleado> update(@Valid  @RequestBody Empleado empleado, @PathVariable Long id){
-        Optional<Empleado> optionalEmpleado = services.update(id, empleado);
+    public ResponseEntity<EmpleadoDto> update(@Valid  @RequestBody EmpleadoDto empleadoDto, @PathVariable Long id){
+        Optional<EmpleadoDto> updatedEmpleado  = services.update(id, empleadoDto);
+//        EmpleadoDto empleadoUpdate =
+        // Retorna el DTO actualizado con un código de estado 200 OK
+        // Retorna un código de estado 404 Not Found si el empleado no se encuentra
+        return updatedEmpleado.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(optionalEmpleado.orElseThrow());
     }
 
     @DeleteMapping("/empleado/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){ /*sin <?> para generico*/
+    public ResponseEntity delete(@PathVariable Long id){ /*sin <?> para generico*/
+
         Optional<Empleado> optionalEmpleado = services.delete(id);
         if (optionalEmpleado.isPresent()){
-            return ResponseEntity.ok(optionalEmpleado.orElseThrow());
-//            return ResponseEntity.noContent().body() debe devolver noCOntent esto y update
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).header("message", "El empleado fue eliminado con éxito.").build();
 
         }
         return ResponseEntity.notFound().build();

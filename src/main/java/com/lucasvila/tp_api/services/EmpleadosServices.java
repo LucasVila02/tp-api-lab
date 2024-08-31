@@ -11,15 +11,13 @@ import java.util.Optional;
 
 public interface EmpleadosServices {
 
-    List<Empleado> findAll();
+    List<EmpleadoDto> findAll();
 
     Optional<Empleado> findById(Long id);
 
-    //DTO????
+    EmpleadoDto create(EmpleadoDto empleadoDto);
 
-    Empleado create(EmpleadoDto empleado);
-
-    Optional<Empleado> update(Long id, Empleado empleado);
+    Optional<EmpleadoDto> update(Long id, EmpleadoDto empleadoDto);
 
     Optional<Empleado> delete(Long id);
 }

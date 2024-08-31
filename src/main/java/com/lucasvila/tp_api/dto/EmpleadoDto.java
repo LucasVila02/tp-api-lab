@@ -1,5 +1,6 @@
 package com.lucasvila.tp_api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.lucasvila.tp_api.entities.Empleado;
 import com.lucasvila.tp_api.validation.anotation.ValidName;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -11,6 +12,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmpleadoDto {
+
+    private long id;
 
     @JsonProperty("numero_documento")
     @NotNull(message = "'numero_documento' es obligatorio.")
@@ -38,6 +41,21 @@ public class EmpleadoDto {
 
     @JsonProperty("fecha_creacion")
     private LocalDate fechaCreacion;
+
+
+    public Empleado toEntity() {
+        Empleado empleado = new Empleado();
+        empleado.setId(this.id);
+        empleado.setNombre(this.nombre);
+        empleado.setApellido(this.apellido);
+        empleado.setEmail(this.email);
+        empleado.setFechaIngreso(this.fechaIngreso);
+        empleado.setNumeroDocumento(this.numeroDocumento);
+        empleado.setFechaNacimiento(this.fechaNacimiento);
+        empleado.setFechaCreacion(this.fechaCreacion);
+        return empleado;
+
+    }
 
     @Override
     public boolean equals(Object o) {

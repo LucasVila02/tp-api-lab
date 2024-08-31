@@ -10,14 +10,15 @@ import com.lucasvila.tp_api.repositories.EmpleadosRepository;
 import com.lucasvila.tp_api.services.EmpleadosServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmpleadosServicesImpl implements EmpleadosServices {
@@ -27,8 +28,11 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Empleado> findAll() {
-        return repository.findAll();
+    public List<EmpleadoDto> findAll() {
+        List<Empleado> empleados = repository.findAll();
+        return empleados.stream()
+                .map(Empleado::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -39,12 +43,14 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
         if (optionalEmpleados.isEmpty()) {
             throw new EmpleadoNoEncontradoException(id);
         }
+        //        Empleado empleado = optionalEmpleados.get();
+        //Revisar DTO
         return optionalEmpleados;
     }
 
     @Transactional
     @Override
-    public Empleado create(EmpleadoDto empleadoDto) {
+    public EmpleadoDto create(EmpleadoDto empleadoDto) {
 
         // Validación de documento duplicado
         if (repository.existsByNumeroDocumento(empleadoDto.getNumeroDocumento())) {
@@ -55,52 +61,47 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
             throw new EmpleadoDuplicadoException( "Ya existe un empleado con el email ingresado.");
         }
 
-        // Validación de fecha de ingreso
-        if (empleadoDto.getFechaIngreso().isAfter(LocalDate.now())) {
-            throw new FechaInvalidaException("La fecha de ingreso no puede ser posterior al día de la fecha.");
-        }
-        // Validación de edad
-        int edad = Period.between(empleadoDto.getFechaNacimiento(), LocalDate.now()).getYears();
-        if (edad < 18) {
-            throw new EdadInvalidaException("La edad del empleado no puede ser menor a 18 años.");
-        }
-        // Validación de fecha de nacimiento
-        if (empleadoDto.getFechaNacimiento().isAfter(LocalDate.now())) {
-            throw new FechaInvalidaException("La fecha de nacimiento no puede ser posterior al día de la fecha.");
-        }
+        validarFechaEmpleado(empleadoDto);
 
-        // Mapeo de DTO a entidad y guardado
-        Empleado empleado = Empleado.builder()
-                .nombre(empleadoDto.getNombre())
-                .apellido(empleadoDto.getApellido())
-                .numeroDocumento(empleadoDto.getNumeroDocumento())
-                .email(empleadoDto.getEmail())
-                .fechaNacimiento(empleadoDto.getFechaNacimiento())
-                .fechaIngreso(empleadoDto.getFechaIngreso())
-                .fechaCreacion(LocalDate.now())
-                .build();
+        Empleado empleado = empleadoDto.toEntity(); // Convierte DTO a entidad
+        Empleado empleadoGuardado = repository.save(empleado);
 
-        return repository.save(empleado);
+        return empleadoGuardado.toDTO();
     }
 
     @Transactional
     @Override
-    public Optional<Empleado> update(Long id, Empleado empleado) {
+    public Optional<EmpleadoDto> update(Long id, EmpleadoDto empleadoDto) {
         Optional<Empleado> optionalEmpleados = repository.findById(id);
 
         if (optionalEmpleados.isPresent()){
-            Empleado empleadoDb = optionalEmpleados.orElseThrow();
 
-            empleadoDb.setNombre(empleado.getNombre());
-            empleadoDb.setApellido(empleado.getApellido());
-            empleadoDb.setEmail(empleado.getEmail());
-            empleadoDb.setNumeroDocumento(empleado.getNumeroDocumento());
-            empleadoDb.setFechaNacimiento(empleado.getFechaNacimiento());
-            empleadoDb.setFechaIngreso(empleado.getFechaIngreso());
-
-            return Optional.of(repository.save(empleadoDb));
+        // Validación de documento duplicado
+        if (repository.existsByNumeroDocumentoAndIdNot(empleadoDto.getNumeroDocumento(), id) ) {
+            throw new EmpleadoDuplicadoException( "Ya existe un empleado con el documento ingresado.");
         }
-        return optionalEmpleados;
+        // Validación de email duplicado
+        if (repository.existsByEmailAndIdNot(empleadoDto.getEmail(), id)) {
+            throw new EmpleadoDuplicadoException( "Ya existe un empleado con el email ingresado.");
+        }
+
+        validarFechaEmpleado(empleadoDto);
+
+        Empleado empleado = optionalEmpleados.get();
+        empleado.setNombre(empleadoDto.getNombre());
+        empleado.setApellido(empleadoDto.getApellido());
+        empleado.setEmail(empleadoDto.getEmail());
+        empleado.setNumeroDocumento(empleadoDto.getNumeroDocumento());
+        empleado.setFechaNacimiento(empleadoDto.getFechaNacimiento());
+        empleado.setFechaIngreso(empleadoDto.getFechaIngreso());
+
+        Empleado empleadoUpdate = repository.save(empleado);
+
+        return Optional.of(empleadoUpdate.toDTO());
+        }else {
+            throw new EmpleadoNoEncontradoException(id);
+        }
+
     }
 
 
@@ -109,9 +110,29 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
     public Optional<Empleado> delete(Long id) {
         Optional<Empleado> optionalEmpleado = repository.findById(id);
 
-        optionalEmpleado.ifPresent(empleado -> {
-                repository.delete(empleado);
-        });
-        return optionalEmpleado;
+        if (optionalEmpleado.isPresent()) {
+            repository.delete(optionalEmpleado.get());
+            return optionalEmpleado; // Retorna el empleado eliminado
+        } else {
+            throw new EmpleadoNoEncontradoException(id); // Lanza la excepción si no se encuentra el empleado
+        }
     }
+
+
+   private EmpleadoDto validarFechaEmpleado(EmpleadoDto empleadoDto) {
+        // Validación de fecha de ingreso
+       if (empleadoDto.getFechaIngreso().isAfter(LocalDate.now())) {
+           throw new FechaInvalidaException("La fecha de ingreso no puede ser posterior al día de la fecha.");
+       }
+       // Validación de edad
+       int edad = Period.between(empleadoDto.getFechaNacimiento(), LocalDate.now()).getYears();
+       if (edad < 18) {
+           throw new EdadInvalidaException("La edad del empleado no puede ser menor a 18 años.");
+       }
+       // Validación de fecha de nacimiento
+       if (empleadoDto.getFechaNacimiento().isAfter(LocalDate.now())) {
+           throw new FechaInvalidaException("La fecha de nacimiento no puede ser posterior al día de la fecha.");
+       }
+       return empleadoDto;
+   }
 }

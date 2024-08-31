@@ -25,8 +25,14 @@ public class Empleado {
     private LocalDate fechaIngreso;
     private LocalDate fechaCreacion;
 
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacion = LocalDate.now(); // Asigna la fecha actual al persistir
+    }
+
     public EmpleadoDto toDTO() {
         EmpleadoDto dto = new EmpleadoDto();
+        dto.setId(this.getId());
         dto.setNombre(this.nombre);
         dto.setApellido(this.apellido);
         dto.setEmail(this.email);

@@ -54,6 +54,7 @@ public class EmpleadoControllerException  {
         responseBody.put("message", message);
 
         return new ResponseEntity<>(responseBody, status);
+        //revisar codigo para unificar
     }
 
 }
