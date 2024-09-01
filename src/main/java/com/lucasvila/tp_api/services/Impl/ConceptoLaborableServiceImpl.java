@@ -1,13 +1,16 @@
 package com.lucasvila.tp_api.services.Impl;
 
+import com.lucasvila.tp_api.dto.ConceptoLaboralDto;
 import com.lucasvila.tp_api.entities.ConceptoLaboral;
 import com.lucasvila.tp_api.repositories.ConceptoLaborableRepository;
 import com.lucasvila.tp_api.services.ConceptoLaborableServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ConceptoLaborableServiceImpl implements ConceptoLaborableServices {
@@ -16,19 +19,23 @@ public class ConceptoLaborableServiceImpl implements ConceptoLaborableServices {
     private ConceptoLaborableRepository repository;
 
 
-    public List<ConceptoLaboral> obtenerConceptos(Long id, String nombre) {
+    @Transactional(readOnly = true)
+    public List<ConceptoLaboralDto> getConceptos(Long id, String nombre) {
+
+        List<ConceptoLaboral> concepto;
+
         if (id != null && nombre != null) {
-            return repository.findByIdAndNombreContainingIgnoreCase(id, nombre);
+            concepto = repository.findByIdAndNombreContainingIgnoreCase(id, nombre);
         } else if (id != null) {
-            return repository.findById(id)
+            concepto = repository.findById(id)
                     .map(Collections::singletonList)  // Si encuentra el concepto, lo envuelve en una lista
                     .orElseGet(Collections::emptyList);  // Si no lo encuentra, devuelve una lista vacía
         } else if (nombre != null) {
-            return repository.findByNombreContainingIgnoreCase(nombre);
+            concepto = repository.findByNombreContainingIgnoreCase(nombre);
         } else {
-            return repository.findAll();
+            concepto = repository.findAll();
         }
+        return concepto.stream().map(ConceptoLaboral::toDTO).collect(Collectors.toList());
     }
-
 
 }

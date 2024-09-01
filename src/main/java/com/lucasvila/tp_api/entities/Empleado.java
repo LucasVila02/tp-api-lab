@@ -4,6 +4,7 @@ import com.lucasvila.tp_api.dto.EmpleadoDto;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter

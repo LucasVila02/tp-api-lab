@@ -1,12 +1,12 @@
 package com.lucasvila.tp_api.services;
 
-import com.lucasvila.tp_api.entities.ConceptoLaboral;
+import com.lucasvila.tp_api.dto.ConceptoLaboralDto;
 
 import java.util.List;
 
 public interface ConceptoLaborableServices {
 
-    List<ConceptoLaboral> obtenerConceptos(Long id, String nombre);
+    List<ConceptoLaboralDto> getConceptos(Long id, String nombre);
 
 
 }

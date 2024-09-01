@@ -56,6 +56,5 @@ public class EmpleadoControllerException  {
         return new ResponseEntity<>(responseBody, status);
         //revisar codigo para unificar
     }
-
 }
 

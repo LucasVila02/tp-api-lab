@@ -2,7 +2,7 @@ package com.lucasvila.tp_api.services;
 
 import com.lucasvila.tp_api.dto.EmpleadoDto;
 import com.lucasvila.tp_api.entities.Empleado;
-import org.springframework.transaction.annotation.Transactional;
+
 
 
 import java.util.List;
