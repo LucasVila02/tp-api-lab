@@ -17,4 +17,6 @@ public class ValidNameValidator implements ConstraintValidator<ValidName, String
     public boolean isValid(String value, ConstraintValidatorContext context) {
         return  value.matches(NAME_REGEX);
     }
+
+
 }

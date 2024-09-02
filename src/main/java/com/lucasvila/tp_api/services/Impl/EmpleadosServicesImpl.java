@@ -2,15 +2,11 @@ package com.lucasvila.tp_api.services.Impl;
 
 import com.lucasvila.tp_api.dto.EmpleadoDto;
 import com.lucasvila.tp_api.entities.Empleado;
-import com.lucasvila.tp_api.exceptions.EdadInvalidaException;
-import com.lucasvila.tp_api.exceptions.EmpleadoDuplicadoException;
-import com.lucasvila.tp_api.exceptions.EmpleadoNoEncontradoException;
-import com.lucasvila.tp_api.exceptions.FechaInvalidaException;
+import com.lucasvila.tp_api.exceptions.*;
 import com.lucasvila.tp_api.repositories.EmpleadosRepository;
+import com.lucasvila.tp_api.repositories.JornadaRepository;
 import com.lucasvila.tp_api.services.EmpleadosServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +21,9 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
     @Autowired
     private EmpleadosRepository repository;
+
+    @Autowired
+    private JornadaRepository jornadaRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -41,7 +40,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
         Optional<Empleado> optionalEmpleados = repository.findById(id);
 
         if (optionalEmpleados.isEmpty()) {
-            throw new EmpleadoNoEncontradoException(id);
+            throw new NoEncontradoException(id, "empleado");
         }
         //        Empleado empleado = optionalEmpleados.get();
         //Revisar DTO
@@ -61,7 +60,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
             throw new EmpleadoDuplicadoException( "Ya existe un empleado con el email ingresado.");
         }
 
-        validarFechaEmpleado(empleadoDto);
+        validarFechasEmpleado(empleadoDto);
 
         Empleado empleado = empleadoDto.toEntity(); // Convierte DTO a entidad
         Empleado empleadoGuardado = repository.save(empleado);
@@ -85,7 +84,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
             throw new EmpleadoDuplicadoException( "Ya existe un empleado con el email ingresado.");
         }
 
-        validarFechaEmpleado(empleadoDto);
+        validarFechasEmpleado(empleadoDto);
 
         Empleado empleado = optionalEmpleados.get();
         empleado.setNombre(empleadoDto.getNombre());
@@ -99,7 +98,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
         return Optional.of(empleadoUpdate.toDTO());
         }else {
-            throw new EmpleadoNoEncontradoException(id);
+            throw new NoEncontradoException(id, "empleado");
         }
 
     }
@@ -110,16 +109,25 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
     public Optional<Empleado> delete(Long id) {
         Optional<Empleado> optionalEmpleado = repository.findById(id);
 
-        if (optionalEmpleado.isPresent()) {
-            repository.delete(optionalEmpleado.get());
-            return optionalEmpleado; // Retorna el empleado eliminado
-        } else {
-            throw new EmpleadoNoEncontradoException(id); // Lanza la excepción si no se encuentra el empleado
+        if (optionalEmpleado.isEmpty()) {
+            // Lanza la excepción si el empleado no se encuentra
+            throw new NoEncontradoException(id, "empleado");
         }
+
+        Empleado empleado = optionalEmpleado.get();
+
+        // Verifica si el empleado tiene jornadas asociadas
+        if (jornadaRepository.existsByEmpleadoId(id)) {
+            throw new BadRequestException("No es posible eliminar un empleado con jornadas asociadas.");
+        }
+
+        // Elimina el empleado si no tiene jornadas asociadas
+        repository.delete(empleado);
+        return optionalEmpleado; // Retorna el empleado eliminado
     }
 
 
-   private EmpleadoDto validarFechaEmpleado(EmpleadoDto empleadoDto) {
+   private void validarFechasEmpleado(EmpleadoDto empleadoDto) {
         // Validación de fecha de ingreso
        if (empleadoDto.getFechaIngreso().isAfter(LocalDate.now())) {
            throw new FechaInvalidaException("La fecha de ingreso no puede ser posterior al día de la fecha.");
@@ -133,6 +141,5 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
        if (empleadoDto.getFechaNacimiento().isAfter(LocalDate.now())) {
            throw new FechaInvalidaException("La fecha de nacimiento no puede ser posterior al día de la fecha.");
        }
-       return empleadoDto;
    }
 }

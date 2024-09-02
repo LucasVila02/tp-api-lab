@@ -2,20 +2,15 @@ package com.lucasvila.tp_api.controllers;
 
 import com.lucasvila.tp_api.dto.EmpleadoDto;
 import com.lucasvila.tp_api.entities.Empleado;
-import com.lucasvila.tp_api.exceptions.EmpleadoNoEncontradoException;
 import com.lucasvila.tp_api.repositories.JornadaRepository;
 import com.lucasvila.tp_api.services.EmpleadosServices;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -25,8 +20,8 @@ public class EmpleadoController {
     @Autowired
     private EmpleadosServices services;
 //
-//    @Autowired
-//    private JornadaRepository jornadaRepository;
+    @Autowired
+    private JornadaRepository jornadaRepository;
 
     @GetMapping("/empleado")
     public List<EmpleadoDto> findAll(){
@@ -62,11 +57,9 @@ public class EmpleadoController {
     }
 
     @DeleteMapping("/empleado/{id}")
-    public ResponseEntity delete(@PathVariable Long id){ /*sin <?> para generico*/
+    public ResponseEntity delete(@PathVariable Long id){
 
-//        if (jornadaRepository.existsByEmpleado(empleado)) {
-//            throw new BusinessException("No se puede eliminar el empleado porque tiene jornadas asociadas.");
-//        }
+
         Optional<Empleado> optionalEmpleado = services.delete(id);
         if (optionalEmpleado.isPresent()){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).header("message", "El empleado fue eliminado con éxito.").build();

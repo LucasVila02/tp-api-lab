@@ -41,8 +41,13 @@ public class EmpleadoControllerException  {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
-    @ExceptionHandler(EmpleadoNoEncontradoException.class)
-    public ResponseEntity<Object> handleBussinessException(EmpleadoNoEncontradoException ex, WebRequest request) {
+    @ExceptionHandler(NoEncontradoException.class)
+    public ResponseEntity<Object> handleBussinessException(NoEncontradoException ex, WebRequest request) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleBussinessException(BadRequestException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
