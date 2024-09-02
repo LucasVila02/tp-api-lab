@@ -5,20 +5,25 @@ import com.lucasvila.tp_api.dto.JornadaResponseDTO;
 import com.lucasvila.tp_api.entities.ConceptoLaboral;
 import com.lucasvila.tp_api.entities.Empleado;
 import com.lucasvila.tp_api.entities.Jornada;
-import com.lucasvila.tp_api.exceptions.BadRequestException;
-import com.lucasvila.tp_api.exceptions.NoEncontradoException;
+import com.lucasvila.tp_api.exceptions.*;
 import com.lucasvila.tp_api.repositories.ConceptoLaborableRepository;
 import com.lucasvila.tp_api.repositories.EmpleadosRepository;
 import com.lucasvila.tp_api.repositories.JornadaRepository;
 import com.lucasvila.tp_api.services.JornadaServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 
 @Service
@@ -33,34 +38,79 @@ public class JornadaServicesImpl implements JornadaServices {
 
 
     @Override
-    public List<Jornada> findByFecha(LocalDate fechaDesde, LocalDate fechaHasta) {
-        return jornadaRepository.findByFechaBetween(fechaDesde, fechaHasta);
+    public List<Jornada> findJornadas(String fechaDesdeStr, String fechaHastaStr, String nroDocumento) {
+        LocalDate fechaDesde = parseFecha(fechaDesdeStr);
+        LocalDate fechaHasta = parseFecha(fechaHastaStr);
+
+        validarFechas(fechaDesde, fechaHasta);
+
+        validarNroDocumento(nroDocumento);
+
+        // Convertir nroDocumento a Integer si es válido
+        Integer documento = nroDocumento != null ? Integer.valueOf(nroDocumento) : null;
+
+        // Mapa para asociar las combinaciones de parámetros con los métodos del repositorio
+        Map<String, Supplier<List<Jornada>>> criterios = new LinkedHashMap<>();
+
+        // Agrega las combinaciones posibles y sus métodos correspondientes al mapa
+        criterios.put("fechaDesdeYFechaHastaYDocumento", () -> jornadaRepository.findByFechaBetweenAndEmpleadoNumeroDocumento(fechaDesde, fechaHasta, documento));
+        criterios.put("fechaDesdeYFechaHasta", () -> jornadaRepository.findByFechaBetween(fechaDesde, fechaHasta));
+        criterios.put("nroDocumento", () -> jornadaRepository.findByEmpleadoNumeroDocumento(documento));
+        criterios.put("fechaDesde", () -> jornadaRepository.findByFechaAfter(fechaDesde));
+        criterios.put("fechaHasta", () -> jornadaRepository.findByFechaBefore(fechaHasta));
+        criterios.put("default", jornadaRepository::findAll);
+
+        // Determina qué combinación de parámetros se ha proporcionado y llama al método correspondiente
+        return criterios.entrySet().stream()
+                .filter(entry -> {
+                    switch (entry.getKey()) {
+                        case "fechaDesdeYFechaHastaYDocumento":
+                            return fechaDesde != null && fechaHasta != null && nroDocumento != null;
+                        case "fechaDesdeYFechaHasta":
+                            return fechaDesde != null && fechaHasta != null;
+                        case "nroDocumento":
+                            return nroDocumento != null;
+                        case "fechaDesde":
+                            return fechaDesde != null && fechaHasta == null;
+                        case "fechaHasta":
+                            return fechaHasta != null && fechaDesde == null;
+                        default:
+                            return fechaDesde == null && fechaHasta == null && nroDocumento == null;
+                    }
+                })
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(criterios.get("default"))
+                .get();
     }
 
-    @Override
-    public List<Jornada> findByFechaDesde(LocalDate fechaDesde) {
-        return jornadaRepository.findByFechaGreaterThanEqual(fechaDesde);
+    private void validarFechas(LocalDate fechaDesde, LocalDate fechaHasta) {
+        // Validación de las fechas
+        if (fechaDesde != null && fechaHasta != null && fechaDesde.isAfter(fechaHasta)) {
+            throw new FechaInvalidaException("El campo ‘fechaDesde’ no puede ser mayor que ‘fechaHasta’.");
+        }
     }
 
-    @Override
-    public List<Jornada> findByFechaHasta(LocalDate fechaHasta) {
-        return jornadaRepository.findByFechaLessThanEqual(fechaHasta);
+    private void validarNroDocumento(String nroDocumento) {
+        if (nroDocumento != null) {
+            try {
+                Integer.parseInt(nroDocumento);
+            } catch (NumberFormatException e) {
+                throw new NroDocumentoInvalido("El campo ‘nroDocumento’ solo puede contener números enteros.");
+            }
+        }
+    }
+    private LocalDate parseFecha(String fechaStr) {
+        if (fechaStr != null) {
+            try {
+                return LocalDate.parse(fechaStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            } catch (DateTimeParseException e) {
+                throw new FechaInvalidaException("Los campos ‘fechaDesde’ y ‘fechaHasta’ deben respetar el formato yyyy-mm-dd.");
+            }
+        }
+        return null;
     }
 
-    @Override
-    public List<Jornada> findByNroDocumento(Integer nroDocumento) {
-        return jornadaRepository.findByEmpleadoNumeroDocumento(nroDocumento);
-    }
-
-    @Override
-    public List<Jornada> findByFechaAndNroDocumento(LocalDate fechaDesde, LocalDate fechaHasta, Integer nroDocumento) {
-        return jornadaRepository.findByFechaBetweenAndEmpleadoNumeroDocumento(fechaDesde, fechaHasta, nroDocumento);
-    }
-
-    @Override
-    public List<Jornada> findAll() {
-        return jornadaRepository.findAll();
-    }
 
 
 
@@ -74,11 +124,11 @@ public class JornadaServicesImpl implements JornadaServices {
 
         // Validar si es 'Turno Normal' o 'Turno Extra' y verificar 'hsTrabajadas'
         if (isTurnoNormalOrExtra(concepto) && jornadaDto.getHorasTrabajadas() == null) {
-            throw new BadRequestException("'hsTrabajadas' es obligatorio para el concepto ingresado.");
+            throw new HorasTurnosInvalidException("'hsTrabajadas' es obligatorio para el concepto ingresado.");
         }
         // Validar si el concepto es 'Día Libre' y verificar si se ingresó 'horasTrabajadas'
         if (!(isTurnoNormalOrExtra(concepto)) && jornadaDto.getHorasTrabajadas() != null) {
-            throw new BadRequestException("El concepto ingresado no requiere el ingreso de 'hsTrabajadas'.");
+            throw new HorasTurnosInvalidException("El concepto ingresado no requiere el ingreso de 'hsTrabajadas'.");
         }
 
         Empleado empleado = empleadoRepository.findById(jornadaDto.getEmpleado())
@@ -125,13 +175,13 @@ public class JornadaServicesImpl implements JornadaServices {
             if ("Día Libre".equals(concepto.getNombre())) {
                 return; // No hay necesidad de validar horas para "Día Libre"
             } else {
-                throw new BadRequestException("Las horas trabajadas no pueden ser nulas para el concepto: " + concepto.getNombre());
+                throw new HorasTurnosInvalidException("Las horas trabajadas no pueden ser nulas para el concepto: " + concepto.getNombre());
             }
         }
 
         // Aquí puedes continuar con la lógica de validación si horasTrabajadas no es null
         if (horasTrabajadas < concepto.getHsMinimo() || horasTrabajadas > concepto.getHsMaximo()) {
-            throw new BadRequestException(String.format("El rango de horas que se puede cargar para este concepto es de %d - %d",
+            throw new HorasTurnosInvalidException(String.format("El rango de horas que se puede cargar para este concepto es de %d - %d",
                     concepto.getHsMinimo(), concepto.getHsMaximo()));
         }
     }
@@ -145,7 +195,7 @@ public class JornadaServicesImpl implements JornadaServices {
                 .sum();
 
         if (horasTotalesDelDia > 14) {
-            throw new BadRequestException("Un empleado no puede cargar más de 14 horas trabajadas en un día.");
+            throw new HorasTurnosInvalidException("Un empleado no puede cargar más de 14 horas trabajadas en un día.");
         }
     }
 
@@ -166,7 +216,7 @@ public class JornadaServicesImpl implements JornadaServices {
 
         // Verificar si supera las 52 horas
         if (horasTotalesSemanales > 52) {
-            throw new BadRequestException("El empleado ingresado supera las 52 horas semanales.");
+            throw new HorasTurnosInvalidException("El empleado ingresado supera las 52 horas semanales.");
         }
     }
     private void validarHorasMensuales(Empleado empleado, Integer horasTrabajadas, LocalDate fecha) {
@@ -180,7 +230,7 @@ public class JornadaServicesImpl implements JornadaServices {
 
         System.out.println("Total de horas trabajadas en la mensuales: " + horasTotalesMensuales);
         if (horasTotalesMensuales > 190) {
-            throw new BadRequestException("El empleado ingresado supera las 190 horas mensuales.");
+            throw new HorasTurnosInvalidException("El empleado ingresado supera las 190 horas mensuales.");
         }
     }
     private void validarTurnosExtraSemanales(Empleado empleado, LocalDate fecha) {
@@ -197,7 +247,7 @@ public class JornadaServicesImpl implements JornadaServices {
 
         // Verificar si ya se excedieron los 3 turnos extra
         if (cantidadTurnosExtra >= 3) {
-            throw new BadRequestException("El empleado ingresado ya cuenta con 3 turnos extra esta semana.");
+            throw new HorasTurnosInvalidException("El empleado ingresado ya cuenta con 3 turnos extra esta semana.");
         }
     }
 
@@ -207,7 +257,7 @@ public class JornadaServicesImpl implements JornadaServices {
                 .anyMatch(j -> "Día Libre".equals(j.getConceptoLaboral().getNombre()));
 
         if (tieneDiaLibre) {
-            throw new BadRequestException("El empleado ingresado cuenta con un día libre en esa fecha.");
+            throw new HorasTurnosInvalidException("El empleado ingresado cuenta con un día libre en esa fecha.");
         }
     }
 
@@ -220,7 +270,7 @@ public class JornadaServicesImpl implements JornadaServices {
                 empleado.getId(), startOfWeek, endOfWeek, "Turno Normal");
 
         if (turnosNormales.size() >= 5) {
-            throw new BadRequestException("El empleado ingresado ya cuenta con 5 turnos normales esta semana.");
+            throw new HorasTurnosInvalidException("El empleado ingresado ya cuenta con 5 turnos normales esta semana.");
         }
     }
 
@@ -232,7 +282,7 @@ public class JornadaServicesImpl implements JornadaServices {
                 empleado.getId(), startOfWeek, endOfWeek, "Día Libre");
 
         if (diasLibres.size() >= 2) {
-            throw new BadRequestException("El empleado no cuenta con más días libres esta semana.");
+            throw new HorasTurnosInvalidException("El empleado no cuenta con más días libres esta semana.");
         }
     }
 
@@ -244,14 +294,14 @@ public class JornadaServicesImpl implements JornadaServices {
                 empleado.getId(), startOfMonth, endOfMonth, "Día Libre");
 
         if (diasLibres.size() >= 5) {
-            throw new BadRequestException("El empleado no cuenta con más días libres este mes.");
+            throw new HorasTurnosInvalidException("El empleado no cuenta con más días libres este mes.");
         }
     }
     private void validarNumeroDeEmpleadosPorConcepto(ConceptoLaboral concepto, LocalDate fecha) {
         long empleadosRegistrados = jornadaRepository.countByConceptoLaboralAndFecha(concepto, fecha);
 
         if (empleadosRegistrados >= 2) {
-            throw new BadRequestException("Ya existen 2 empleados registrados para este concepto en la fecha ingresada.");
+            throw new HorasTurnosInvalidException("Ya existen 2 empleados registrados para este concepto en la fecha ingresada.");
         }
     }
 
@@ -259,8 +309,10 @@ public class JornadaServicesImpl implements JornadaServices {
         boolean jornadaExistente = jornadaRepository.existsByEmpleadoIdAndConceptoLaboralAndFecha(empleado.getId(), concepto, fecha);
 
         if (jornadaExistente) {
-            throw new BadRequestException("El empleado ya tiene registrado una jornada con este concepto en la fecha ingresada.");
+            throw new HorasTurnosInvalidException("El empleado ya tiene registrado una jornada con este concepto en la fecha ingresada.");
         }
     }
+
+
 
 }

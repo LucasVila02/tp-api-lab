@@ -51,6 +51,14 @@ public class EmpleadoControllerException  {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(NroDocumentoInvalido.class)
+    public ResponseEntity<Object> handleBussinessException(NroDocumentoInvalido ex, WebRequest request) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+    @ExceptionHandler(HorasTurnosInvalidException.class)
+    public ResponseEntity<Object> handleBussinessException(HorasTurnosInvalidException ex, WebRequest request) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
 
     private ResponseEntity<Object> buildResponseEntity(HttpStatus status, String message) {
         Map<String, Object> responseBody = new LinkedHashMap<>();

@@ -12,15 +12,6 @@ public interface JornadaServices {
 
     JornadaResponseDTO addJornada(JornadaRequestDTO jornada);
 
-    List<Jornada> findByFecha(LocalDate fechaDesde, LocalDate fechaHasta);
+    List<Jornada> findJornadas(String fechaDesde, String fechaHasta, String numeroDocumento);
 
-    List<Jornada> findByFechaDesde(LocalDate fechaDesde);
-
-    List<Jornada> findByFechaHasta(LocalDate fechaHasta);
-
-    List<Jornada> findByNroDocumento(Integer nroDocumento);
-
-    List<Jornada> findByFechaAndNroDocumento(LocalDate fechaDesde, LocalDate fechaHasta, Integer nroDocumento);
-
-    List<Jornada> findAll();
 }

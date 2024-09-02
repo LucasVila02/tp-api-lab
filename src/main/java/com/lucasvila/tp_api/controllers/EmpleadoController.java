@@ -49,7 +49,6 @@ public class EmpleadoController {
     @PutMapping("/empleado/{id}")
     public ResponseEntity<EmpleadoDto> update(@Valid  @RequestBody EmpleadoDto empleadoDto, @PathVariable Long id){
         Optional<EmpleadoDto> updatedEmpleado  = services.update(id, empleadoDto);
-//        EmpleadoDto empleadoUpdate =
         // Retorna el DTO actualizado con un código de estado 200 OK
         // Retorna un código de estado 404 Not Found si el empleado no se encuentra
         return updatedEmpleado.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

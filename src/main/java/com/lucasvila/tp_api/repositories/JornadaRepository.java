@@ -18,17 +18,17 @@ public interface JornadaRepository extends JpaRepository<Jornada, Long> {
 
     boolean existsByEmpleadoIdAndConceptoLaboralAndFecha(Long id, ConceptoLaboral conceptoLaborable, LocalDate fecha);
 
-//    boolean existsByEmpleado(Empleado empleado);
-
     boolean existsByEmpleadoId(Long id);
 
     List<Jornada> findByFechaBetween(LocalDate fechaDesde, LocalDate fechaHasta);
 
-    List<Jornada> findByFechaGreaterThanEqual(LocalDate fechaDesde);
+    List<Jornada> findByFechaBetweenAndEmpleadoNumeroDocumento(LocalDate fechaDesde, LocalDate fechaHasta, Integer numeroDocumento);
 
-    List<Jornada> findByFechaLessThanEqual(LocalDate fechaHasta);
+    List<Jornada> findByFechaAfter(LocalDate fechaDesde);
+
+    List<Jornada> findByFechaBefore(LocalDate fechaHasta);
 
     List<Jornada> findByEmpleadoNumeroDocumento(Integer numeroDocumento);
 
-    List<Jornada> findByFechaBetweenAndEmpleadoNumeroDocumento(LocalDate fechaDesde, LocalDate fechaHasta, Integer numeroDocumento);
+
 }
