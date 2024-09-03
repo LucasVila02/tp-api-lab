@@ -55,8 +55,8 @@ public class EmpleadoControllerException  {
     public ResponseEntity<Object> handleBussinessException(NroDocumentoInvalido ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
-    @ExceptionHandler(HorasTurnosInvalidException.class)
-    public ResponseEntity<Object> handleBussinessException(HorasTurnosInvalidException ex, WebRequest request) {
+    @ExceptionHandler(HorasTurnosInvalidoException.class)
+    public ResponseEntity<Object> handleBussinessException(HorasTurnosInvalidoException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 

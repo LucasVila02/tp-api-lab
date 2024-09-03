@@ -1,12 +1,9 @@
 package com.lucasvila.tp_api.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.lucasvila.tp_api.dto.ConceptoLaboralDto;
+import com.lucasvila.tp_api.dto.ConceptoLaboralDTO;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -31,8 +28,8 @@ public class ConceptoLaboral {
     private Integer hsMinimo;
 
 
-    public ConceptoLaboralDto toDTO() {
-        ConceptoLaboralDto dto = new ConceptoLaboralDto();
+    public ConceptoLaboralDTO toDTO() {
+        ConceptoLaboralDTO dto = new ConceptoLaboralDTO();
         dto.setNombre(this.nombre);
         dto.setLaborable(this.laborable);
         dto.setHsMinimo(this.hsMinimo != null ? this.hsMinimo : 0);

@@ -1,7 +1,7 @@
 package com.lucasvila.tp_api.controllers;
 
 
-import com.lucasvila.tp_api.dto.ConceptoLaboralDto;
+import com.lucasvila.tp_api.dto.ConceptoLaboralDTO;
 import com.lucasvila.tp_api.services.ConceptoLaborableServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +17,11 @@ public class ConceptoLaboralController {
     private ConceptoLaborableServices services;
 
     @GetMapping({"/concepto"})
-    public ResponseEntity<List<ConceptoLaboralDto>> obtenerConceptos(
+    public ResponseEntity<List<ConceptoLaboralDTO>> obtenerConceptos(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String nombre) {
 
-        List<ConceptoLaboralDto> conceptos = services.getConceptos(id, nombre);
+        List<ConceptoLaboralDTO> conceptos = services.getConceptos(id, nombre);
         return ResponseEntity.ok(conceptos);
 
     }

@@ -3,7 +3,6 @@ package com.lucasvila.tp_api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lucasvila.tp_api.entities.ConceptoLaboral;
-import com.lucasvila.tp_api.entities.Empleado;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConceptoLaboralDto {
+public class ConceptoLaboralDTO {
 
     private Long id;
 

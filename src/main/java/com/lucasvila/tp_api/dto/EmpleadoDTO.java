@@ -11,7 +11,7 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmpleadoDto {
+public class EmpleadoDTO {
 
     private long id;
 
@@ -61,7 +61,7 @@ public class EmpleadoDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EmpleadoDto that = (EmpleadoDto) o;
+        EmpleadoDTO that = (EmpleadoDTO) o;
         return Objects.equals(numeroDocumento, that.numeroDocumento) && Objects.equals(nombre, that.nombre) && Objects.equals(apellido, that.apellido) && Objects.equals(email, that.email) && Objects.equals(fechaNacimiento, that.fechaNacimiento) && Objects.equals(fechaIngreso, that.fechaIngreso);
     }
 

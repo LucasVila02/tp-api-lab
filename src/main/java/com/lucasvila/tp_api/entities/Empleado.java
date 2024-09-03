@@ -1,10 +1,9 @@
 package com.lucasvila.tp_api.entities;
 
-import com.lucasvila.tp_api.dto.EmpleadoDto;
+import com.lucasvila.tp_api.dto.EmpleadoDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Getter
@@ -31,8 +30,8 @@ public class Empleado {
         this.fechaCreacion = LocalDate.now(); // Asigna la fecha actual al persistir
     }
 
-    public EmpleadoDto toDTO() {
-        EmpleadoDto dto = new EmpleadoDto();
+    public EmpleadoDTO toDTO() {
+        EmpleadoDTO dto = new EmpleadoDTO();
         dto.setId(this.getId());
         dto.setNombre(this.nombre);
         dto.setApellido(this.apellido);

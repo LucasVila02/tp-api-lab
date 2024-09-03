@@ -37,8 +37,9 @@ public class Jornada {
 //    @Column(name = "horas_trabajadas")
     @JsonProperty("horas_trabajadas")
     private Integer horasTrabajadas;
-    // Método para mapear a DTO de respuesta
 
+
+    // Método para mapear a DTO de respuesta
     public JornadaResponseDTO toResponseDTO() {
         JornadaResponseDTO dto = new JornadaResponseDTO();
         dto.setNroDocumento(this.empleado.getNumeroDocumento());

@@ -1,6 +1,6 @@
 package com.lucasvila.tp_api.services;
 
-import com.lucasvila.tp_api.dto.EmpleadoDto;
+import com.lucasvila.tp_api.dto.EmpleadoDTO;
 import com.lucasvila.tp_api.entities.Empleado;
 
 
@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface EmpleadosServices {
 
-    List<EmpleadoDto> findAll();
+    List<EmpleadoDTO> findAll();
 
-    Optional<Empleado> findById(Long id);
+    Optional<EmpleadoDTO> findById(Long id);
 
-    EmpleadoDto create(EmpleadoDto empleadoDto);
+    EmpleadoDTO create(EmpleadoDTO empleadoDto);
 
-    Optional<EmpleadoDto> update(Long id, EmpleadoDto empleadoDto);
+    Optional<EmpleadoDTO> update(Long id, EmpleadoDTO empleadoDto);
 
     Optional<Empleado> delete(Long id);
 }

@@ -1,6 +1,6 @@
 package com.lucasvila.tp_api.services.Impl;
 
-import com.lucasvila.tp_api.dto.ConceptoLaboralDto;
+import com.lucasvila.tp_api.dto.ConceptoLaboralDTO;
 import com.lucasvila.tp_api.entities.ConceptoLaboral;
 import com.lucasvila.tp_api.repositories.ConceptoLaborableRepository;
 import com.lucasvila.tp_api.services.ConceptoLaborableServices;
@@ -20,7 +20,7 @@ public class ConceptoLaborableServiceImpl implements ConceptoLaborableServices {
 
 
     @Transactional(readOnly = true)
-    public List<ConceptoLaboralDto> getConceptos(Long id, String nombre) {
+    public List<ConceptoLaboralDTO> getConceptos(Long id, String nombre) {
 
         List<ConceptoLaboral> concepto;
 
