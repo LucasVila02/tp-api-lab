@@ -1,11 +1,13 @@
 package com.lucasvila.tp_api.exceptions;
 
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+
 import java.util.*;
 
 @ControllerAdvice
@@ -26,38 +28,27 @@ public class EmpleadoControllerException  {
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EmpleadoDuplicadoException.class)
-    public ResponseEntity<Object> handleBussinessException(EmpleadoDuplicadoException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
-    }
+    @ExceptionHandler({
+            EmpleadoDuplicadoException.class,
+            FechaInvalidaException.class,
+            EdadInvalidaException.class,
+            NoEncontradoException.class,
+            BadRequestException.class,
+            NroDocumentoInvalidoException.class,
+            HorasTurnosInvalidoException.class
+    })
+    public ResponseEntity<Object> handleBussinessException(RuntimeException ex, WebRequest request) {
+        HttpStatus status;
 
-    @ExceptionHandler(FechaInvalidaException.class)
-    public ResponseEntity<Object> handleBussinessException(FechaInvalidaException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
+        if (ex instanceof EmpleadoDuplicadoException) {
+            status = HttpStatus.CONFLICT;
+        } else if (ex instanceof NoEncontradoException || ex instanceof NroDocumentoInvalidoException) {
+            status = HttpStatus.NOT_FOUND;
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+        }
 
-    @ExceptionHandler(EdadInvalidaException.class)
-    public ResponseEntity<Object> handleBussinessException(EdadInvalidaException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler(NoEncontradoException.class)
-    public ResponseEntity<Object> handleBussinessException(NoEncontradoException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Object> handleBussinessException(BadRequestException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler(NroDocumentoInvalidoException.class)
-    public ResponseEntity<Object> handleBussinessException(NroDocumentoInvalidoException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-    @ExceptionHandler(HorasTurnosInvalidoException.class)
-    public ResponseEntity<Object> handleBussinessException(HorasTurnosInvalidoException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return buildResponseEntity(status, ex.getMessage());
     }
 
     private ResponseEntity<Object> buildResponseEntity(HttpStatus status, String message) {
@@ -67,7 +58,6 @@ public class EmpleadoControllerException  {
         responseBody.put("message", message);
 
         return new ResponseEntity<>(responseBody, status);
-        //revisar codigo para unificar
     }
 }
 

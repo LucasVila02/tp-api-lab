@@ -42,8 +42,6 @@ public class ValidacionEmpleado {
     }
 
 
-
-
     public void validarFechasEmpleado(EmpleadoDTO empleadoDto) {
         // Validación de fecha de ingreso
         if (empleadoDto.getFechaIngreso().isAfter(LocalDate.now())) {

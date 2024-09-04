@@ -1,7 +1,6 @@
 package com.lucasvila.tp_api.controllers;
 
 import com.lucasvila.tp_api.dto.EmpleadoDTO;
-import com.lucasvila.tp_api.entities.Empleado;
 import com.lucasvila.tp_api.repositories.JornadaRepository;
 import com.lucasvila.tp_api.services.EmpleadosServices;
 import jakarta.validation.Valid;
