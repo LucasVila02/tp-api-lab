@@ -1,5 +1,6 @@
 package com.lucasvila.tp_api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class JornadaRequestDTO {
     @NotNull(message = "'fecha' es obligatorio.")
     private LocalDate fecha;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("hsTrabajadas")
     private Integer horasTrabajadas;
 

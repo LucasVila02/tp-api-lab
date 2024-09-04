@@ -25,12 +25,8 @@ public class ConceptoLaboral {
 
     private boolean laborable;
 
-    @JsonInclude
-    @Column(name = "hsMaximo")
     private Integer hsMaximo;
 
-    @JsonInclude
-    @Column(name = "hsMinimo")
     private Integer hsMinimo;
 
 
@@ -43,8 +39,7 @@ public class ConceptoLaboral {
         dto.setId(this.id);
         return dto;
     }
-
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

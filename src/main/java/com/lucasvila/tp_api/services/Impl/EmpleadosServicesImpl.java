@@ -40,13 +40,11 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
     @Transactional(readOnly = true)
     @Override
     public Optional<EmpleadoDTO> findById(Long id) {
-        Optional<Empleado> optionalEmpleados = empleadosRepository.findById(id);
-
-        if (optionalEmpleados.isEmpty()) {
-            throw new NoEncontradoException(id, "empleado");
-        }
-
-        return optionalEmpleados.map(Empleado::toDTO);
+        return empleadosRepository.findById(id)
+                .map(Empleado::toDTO)
+                .or(() -> {
+                    throw new NoEncontradoException(id, "empleado");
+                });
     }
 
     @Transactional
@@ -57,8 +55,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
         validacionEmpleado.validarFechasEmpleado(empleadoDto);
 
-        Empleado empleado = empleadoDto.toEntity(); // Convierte DTO a entidad
-        Empleado empleadoGuardado = empleadosRepository.save(empleado);
+        Empleado empleadoGuardado = empleadosRepository.save(empleadoDto.toEntity());
 
         return empleadoGuardado.toDTO();
     }
@@ -66,15 +63,12 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
     @Transactional
     @Override
     public Optional<EmpleadoDTO> update(Long id, EmpleadoDTO empleadoDto) {
-        Optional<Empleado> optionalEmpleados = empleadosRepository.findById(id);
-
-        if (optionalEmpleados.isPresent()){
+        Empleado empleado = empleadosRepository.findById(id)
+                .orElseThrow(()-> new NoEncontradoException(id, "empleado"));
 
             validacionEmpleado.validarEmailAndDocumentoEmpleadoUpdate( empleadoDto,id);
-
             validacionEmpleado.validarFechasEmpleado(empleadoDto);
 
-            Empleado empleado = optionalEmpleados.get();
             empleado.setNombre(empleadoDto.getNombre());
             empleado.setApellido(empleadoDto.getApellido());
             empleado.setEmail(empleadoDto.getEmail());
@@ -85,30 +79,20 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
             Empleado empleadoUpdate = empleadosRepository.save(empleado);
 
             return Optional.of(empleadoUpdate.toDTO());
-        }else {
-            throw new NoEncontradoException(id, "empleado");
-        }
-
     }
 
     @Transactional
     @Override
     public Optional<Empleado> delete(Long id) {
-        Optional<Empleado> optionalEmpleado = empleadosRepository.findById(id);
+        Empleado empleado = empleadosRepository.findById(id)
+                .orElseThrow(() -> new NoEncontradoException(id, "empleado"));
 
-        if (optionalEmpleado.isEmpty()) {
-            // Lanza la excepción si el empleado no se encuentra
-            throw new NoEncontradoException(id, "empleado");
-        }
-        Empleado empleado = optionalEmpleado.get();
-
-        // Verifica si el empleado tiene jornadas asociadas
         if (jornadaRepository.existsByEmpleadoId(id)) {
             throw new BadRequestException("No es posible eliminar un empleado con jornadas asociadas.");
         }
         // Elimina el empleado si no tiene jornadas asociadas
         empleadosRepository.delete(empleado);
-        return optionalEmpleado; // Retorna el empleado eliminado
+        return Optional.of(empleado); // Retorna el empleado eliminado
     }
 
 }

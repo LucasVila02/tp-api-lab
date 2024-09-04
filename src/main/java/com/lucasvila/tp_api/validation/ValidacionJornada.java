@@ -24,6 +24,7 @@ public class ValidacionJornada {
     @Autowired
     private JornadaRepository jornadaRepository;
 
+
     public void validarFechas(LocalDate fechaDesde, LocalDate fechaHasta) {
         // Validación de las fechas
         if (fechaDesde != null && fechaHasta != null && fechaDesde.isAfter(fechaHasta)) {

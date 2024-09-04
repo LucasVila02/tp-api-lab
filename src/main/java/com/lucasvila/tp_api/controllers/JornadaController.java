@@ -5,6 +5,7 @@ import com.lucasvila.tp_api.dto.JornadaRequestDTO;
 import com.lucasvila.tp_api.dto.JornadaResponseDTO;
 import com.lucasvila.tp_api.entities.Jornada;
 import com.lucasvila.tp_api.services.JornadaServices;
+import com.lucasvila.tp_api.validation.ValidacionJornada;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,6 +23,9 @@ public class JornadaController {
 
     @Autowired
     private JornadaServices services;
+
+    @Autowired
+    private ValidacionJornada validacionJornada;
 
 
     @GetMapping("/jornadas")

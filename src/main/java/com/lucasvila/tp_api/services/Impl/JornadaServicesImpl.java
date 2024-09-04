@@ -33,7 +33,7 @@ public class JornadaServicesImpl implements JornadaServices {
     @Autowired
     private ValidacionJornada validacionJornada;
 
-
+    @Transactional(readOnly = true)
     @Override
     public List<Jornada> findJornadas(String fechaDesdeStr, String fechaHastaStr, String nroDocumento) {
         LocalDate fechaDesde = validacionJornada.validarFormatoFecha(fechaDesdeStr);
