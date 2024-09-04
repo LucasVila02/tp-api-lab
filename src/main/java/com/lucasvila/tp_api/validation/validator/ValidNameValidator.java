@@ -15,6 +15,10 @@ public class ValidNameValidator implements ConstraintValidator<ValidName, String
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+
+        if (value == null) {
+            return true; // O false, dependiendo de cómo quieras manejar los valores null
+        }
         return  value.matches(NAME_REGEX);
     }
 

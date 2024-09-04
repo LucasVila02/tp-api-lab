@@ -1,7 +1,6 @@
 package com.lucasvila.tp_api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.lucasvila.tp_api.dto.JornadaRequestDTO;
 import com.lucasvila.tp_api.dto.JornadaResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -42,7 +42,7 @@ public class Jornada {
     // Método para mapear a DTO de respuesta
     public JornadaResponseDTO toResponseDTO() {
         JornadaResponseDTO dto = new JornadaResponseDTO();
-        dto.setNroDocumento(this.empleado.getNumeroDocumento());
+        dto.setNroDocumento(this.empleado.getNroDocumento());
         dto.setNombreCompleto(this.empleado.getNombre() + " " + this.empleado.getApellido());
         dto.setFecha(this.fecha);
         dto.setConcepto(this.conceptoLaboral.getNombre());
@@ -50,4 +50,17 @@ public class Jornada {
         return dto;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Jornada jornada = (Jornada) o;
+        return Objects.equals(id, jornada.id) && Objects.equals(conceptoLaboral, jornada.conceptoLaboral) && Objects.equals(empleado, jornada.empleado) && Objects.equals(fecha, jornada.fecha) && Objects.equals(horasTrabajadas, jornada.horasTrabajadas);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, conceptoLaboral, empleado, fecha, horasTrabajadas);
+    }
 }

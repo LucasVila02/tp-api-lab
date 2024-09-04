@@ -36,6 +36,22 @@ public class ConceptoLaborableServiceImpl implements ConceptoLaborableServices {
             concepto = repository.findAll();
         }
         return concepto.stream().map(ConceptoLaboral::toDTO).collect(Collectors.toList());
-    }
 
+//        if (id != null && nombre != null) {
+//            concepto = repository.findByIdAndNombreContainingIgnoreCase(id, nombre);
+//        } else if (id != null) {
+//            concepto = repository.findById(id)
+//                    .map(Collections::singletonList)  // Si encuentra el concepto, lo envuelve en una lista
+//                    .orElseGet(Collections::emptyList);  // Si no lo encuentra, devuelve una lista vacía
+//        } else if (nombre != null) {
+//            concepto = repository.findByNombreContainingIgnoreCase(nombre);
+//        } else {
+//            concepto = repository.findAll();
+//        }
+//
+//        // Convertir a DTO con exclusión de hsMinimo y hsMaximo si ambos son null
+//        return concepto.stream()
+//                .map(ConceptoLaboral::toDTO)
+//                .collect(Collectors.toList());
+    }
 }

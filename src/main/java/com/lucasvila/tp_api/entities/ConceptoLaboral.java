@@ -1,10 +1,14 @@
 package com.lucasvila.tp_api.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.lucasvila.tp_api.dto.ConceptoLaboralDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,10 +25,12 @@ public class ConceptoLaboral {
 
     private boolean laborable;
 
-    @Column(name = "hs_maximo")
+    @JsonInclude
+    @Column(name = "hsMaximo")
     private Integer hsMaximo;
 
-    @Column(name = "hs_minimo")
+    @JsonInclude
+    @Column(name = "hsMinimo")
     private Integer hsMinimo;
 
 
@@ -38,4 +44,17 @@ public class ConceptoLaboral {
         return dto;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConceptoLaboral that = (ConceptoLaboral) o;
+        return laborable == that.laborable && Objects.equals(id, that.id) && Objects.equals(nombre, that.nombre) && Objects.equals(hsMaximo, that.hsMaximo) && Objects.equals(hsMinimo, that.hsMinimo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre, laborable, hsMaximo, hsMinimo);
+    }
 }

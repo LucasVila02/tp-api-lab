@@ -48,16 +48,16 @@ public class EmpleadoControllerException  {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleBussinessException(BadRequestException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
-    @ExceptionHandler(NroDocumentoInvalido.class)
-    public ResponseEntity<Object> handleBussinessException(NroDocumentoInvalido ex, WebRequest request) {
+    @ExceptionHandler(NroDocumentoInvalidoException.class)
+    public ResponseEntity<Object> handleBussinessException(NroDocumentoInvalidoException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
     @ExceptionHandler(HorasTurnosInvalidoException.class)
     public ResponseEntity<Object> handleBussinessException(HorasTurnosInvalidoException ex, WebRequest request) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     private ResponseEntity<Object> buildResponseEntity(HttpStatus status, String message) {

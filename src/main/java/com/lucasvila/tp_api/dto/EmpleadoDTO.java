@@ -15,31 +15,31 @@ public class EmpleadoDTO {
 
     private long id;
 
-    @JsonProperty("numero_documento")
-    @NotNull(message = "'numero_documento' es obligatorio.")
+    @JsonProperty("nroDocumento")
+    @NotNull(message = "'nroDocumento' es obligatorio.")
     private Integer numeroDocumento;
 
     @ValidName(message = "Solo se permiten letras en el campo ‘nombre’.")
-    @NotBlank(message = "'nombre' es obligatorio.")
+    @NotNull(message = "'nombre' es obligatorio.")
     private String nombre;
 
     @ValidName(message = "Solo se permiten letras en el campo ‘apellido’.")
-    @NotBlank(message = "'apellido' es obligatorio")
+    @NotNull(message = "'apellido' es obligatorio")
     private String apellido;
 
     @NotBlank(message = "'email' es obligatorio.")
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com$", message = "El email debe  contener '@',  y terminar con '.com'.")
     private String email;
 
-    @JsonProperty("fecha_nacimiento")
-    @NotNull(message = "'fecha_nacimiento' es obligatorio.")
+    @JsonProperty("fechaNacimiento")
+    @NotNull(message = "'fechaNacimiento' es obligatorio.")
     private LocalDate fechaNacimiento;
 
-    @JsonProperty("fecha_ingreso")
-    @NotNull(message = "'fecha_ingreso' es obligatorio.")
+    @JsonProperty("fechaIngreso")
+    @NotNull(message = "'fechaIngreso' es obligatorio.")
     private LocalDate fechaIngreso;
 
-    @JsonProperty("fecha_creacion")
+    @JsonProperty("fechaCreacion")
     private LocalDate fechaCreacion;
 
 
@@ -50,24 +50,11 @@ public class EmpleadoDTO {
         empleado.setApellido(this.apellido);
         empleado.setEmail(this.email);
         empleado.setFechaIngreso(this.fechaIngreso);
-        empleado.setNumeroDocumento(this.numeroDocumento);
+        empleado.setNroDocumento(this.numeroDocumento);
         empleado.setFechaNacimiento(this.fechaNacimiento);
         empleado.setFechaCreacion(this.fechaCreacion);
         return empleado;
 
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EmpleadoDTO that = (EmpleadoDTO) o;
-        return Objects.equals(numeroDocumento, that.numeroDocumento) && Objects.equals(nombre, that.nombre) && Objects.equals(apellido, that.apellido) && Objects.equals(email, that.email) && Objects.equals(fechaNacimiento, that.fechaNacimiento) && Objects.equals(fechaIngreso, that.fechaIngreso);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(numeroDocumento, nombre, apellido, email, fechaNacimiento, fechaIngreso);
     }
 
     @Override
@@ -80,5 +67,18 @@ public class EmpleadoDTO {
                 ", fechaNacimiento=" + fechaNacimiento +
                 ", fechaIngreso=" + fechaIngreso +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmpleadoDTO that = (EmpleadoDTO) o;
+        return id == that.id && Objects.equals(numeroDocumento, that.numeroDocumento) && Objects.equals(nombre, that.nombre) && Objects.equals(apellido, that.apellido) && Objects.equals(email, that.email) && Objects.equals(fechaNacimiento, that.fechaNacimiento) && Objects.equals(fechaIngreso, that.fechaIngreso) && Objects.equals(fechaCreacion, that.fechaCreacion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, numeroDocumento, nombre, apellido, email, fechaNacimiento, fechaIngreso, fechaCreacion);
     }
 }

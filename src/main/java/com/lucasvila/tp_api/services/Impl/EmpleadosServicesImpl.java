@@ -3,7 +3,7 @@ package com.lucasvila.tp_api.services.Impl;
 import com.lucasvila.tp_api.dto.EmpleadoDTO;
 import com.lucasvila.tp_api.entities.Empleado;
 import com.lucasvila.tp_api.exceptions.*;
-import com.lucasvila.tp_api.mapper.Mapper;
+
 import com.lucasvila.tp_api.repositories.EmpleadosRepository;
 import com.lucasvila.tp_api.repositories.JornadaRepository;
 import com.lucasvila.tp_api.services.EmpleadosServices;
@@ -27,9 +27,6 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
     @Autowired
     private ValidacionEmpleado validacionEmpleado;
-
-    private Mapper mapper;
-
 
     @Transactional(readOnly = true)
     @Override
@@ -81,7 +78,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
             empleado.setNombre(empleadoDto.getNombre());
             empleado.setApellido(empleadoDto.getApellido());
             empleado.setEmail(empleadoDto.getEmail());
-            empleado.setNumeroDocumento(empleadoDto.getNumeroDocumento());
+            empleado.setNroDocumento(empleadoDto.getNumeroDocumento());
             empleado.setFechaNacimiento(empleadoDto.getFechaNacimiento());
             empleado.setFechaIngreso(empleadoDto.getFechaIngreso());
 

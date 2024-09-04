@@ -18,9 +18,10 @@ public class ValidacionEmpleado {
     @Autowired
     private EmpleadosRepository empleadosRepository;
 
+
     public void validarEmailAndDocumentoEmpleadoCreate(EmpleadoDTO empleadoDto) {
         // Validación de documento duplicado
-        if (empleadosRepository.existsByNumeroDocumento(empleadoDto.getNumeroDocumento())) {
+        if (empleadosRepository.existsByNroDocumento(empleadoDto.getNumeroDocumento())) {
             throw new EmpleadoDuplicadoException("Ya existe un empleado con el documento ingresado.");
         }
         // Validación de email duplicado
@@ -31,7 +32,7 @@ public class ValidacionEmpleado {
 
     public void validarEmailAndDocumentoEmpleadoUpdate(EmpleadoDTO empleadoDto, Long id){
         // Validación de documento duplicado
-        if (empleadosRepository.existsByNumeroDocumentoAndIdNot(empleadoDto.getNumeroDocumento(), id) ) {
+        if (empleadosRepository.existsByNroDocumentoAndIdNot(empleadoDto.getNumeroDocumento(), id) ) {
             throw new EmpleadoDuplicadoException( "Ya existe un empleado con el documento ingresado.");
         }
         // Validación de email duplicado
@@ -46,14 +47,15 @@ public class ValidacionEmpleado {
         if (empleadoDto.getFechaIngreso().isAfter(LocalDate.now())) {
             throw new FechaInvalidaException("La fecha de ingreso no puede ser posterior al día de la fecha.");
         }
+        // Validación de fecha de nacimiento
+        if (empleadoDto.getFechaNacimiento().isAfter(LocalDate.now())) {
+            throw new FechaInvalidaException("La fecha de nacimiento no puede ser posterior al día de la fecha.");
+        }
         // Validación de edad
         int edad = Period.between(empleadoDto.getFechaNacimiento(), LocalDate.now()).getYears();
         if (edad < 18) {
             throw new EdadInvalidaException("La edad del empleado no puede ser menor a 18 años.");
         }
-        // Validación de fecha de nacimiento
-        if (empleadoDto.getFechaNacimiento().isAfter(LocalDate.now())) {
-            throw new FechaInvalidaException("La fecha de nacimiento no puede ser posterior al día de la fecha.");
-        }
+
     }
 }

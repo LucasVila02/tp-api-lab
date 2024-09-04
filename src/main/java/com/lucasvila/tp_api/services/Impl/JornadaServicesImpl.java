@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -52,9 +50,9 @@ public class JornadaServicesImpl implements JornadaServices {
         Map<String, Supplier<List<Jornada>>> criterios = new LinkedHashMap<>();
 
         // Agrega las combinaciones posibles y sus métodos correspondientes al mapa
-        criterios.put("fechaDesdeYFechaHastaYDocumento", () -> jornadaRepository.findByFechaBetweenAndEmpleadoNumeroDocumento(fechaDesde, fechaHasta, documento));
+        criterios.put("fechaDesdeYFechaHastaYDocumento", () -> jornadaRepository.findByFechaBetweenAndEmpleadoNroDocumento(fechaDesde, fechaHasta, documento));
         criterios.put("fechaDesdeYFechaHasta", () -> jornadaRepository.findByFechaBetween(fechaDesde, fechaHasta));
-        criterios.put("nroDocumento", () -> jornadaRepository.findByEmpleadoNumeroDocumento(documento));
+        criterios.put("nroDocumento", () -> jornadaRepository.findByEmpleadoNroDocumento(documento));
         criterios.put("fechaDesde", () -> jornadaRepository.findByFechaAfter(fechaDesde));
         criterios.put("fechaHasta", () -> jornadaRepository.findByFechaBefore(fechaHasta));
         criterios.put("default", jornadaRepository::findAll);

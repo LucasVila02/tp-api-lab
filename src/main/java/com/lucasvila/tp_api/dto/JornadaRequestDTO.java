@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 
 @Data
@@ -28,9 +29,19 @@ public class JornadaRequestDTO {
     @NotNull(message = "'fecha' es obligatorio.")
     private LocalDate fecha;
 
-    @JsonProperty("horas_trabajadas")
+    @JsonProperty("hsTrabajadas")
     private Integer horasTrabajadas;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JornadaRequestDTO that = (JornadaRequestDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(concepto, that.concepto) && Objects.equals(empleado, that.empleado) && Objects.equals(fecha, that.fecha) && Objects.equals(horasTrabajadas, that.horasTrabajadas);
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, concepto, empleado, fecha, horasTrabajadas);
+    }
 }

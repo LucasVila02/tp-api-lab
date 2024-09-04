@@ -5,7 +5,7 @@ import com.lucasvila.tp_api.entities.Empleado;
 import com.lucasvila.tp_api.entities.Jornada;
 import com.lucasvila.tp_api.exceptions.FechaInvalidaException;
 import com.lucasvila.tp_api.exceptions.HorasTurnosInvalidoException;
-import com.lucasvila.tp_api.exceptions.NroDocumentoInvalido;
+import com.lucasvila.tp_api.exceptions.NroDocumentoInvalidoException;
 import com.lucasvila.tp_api.repositories.JornadaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +16,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ValidacionJornada {
 
     @Autowired
     private JornadaRepository jornadaRepository;
-
 
     public void validarFechas(LocalDate fechaDesde, LocalDate fechaHasta) {
         // Validación de las fechas
@@ -36,7 +36,7 @@ public class ValidacionJornada {
             try {
                 Integer.parseInt(nroDocumento);
             } catch (NumberFormatException e) {
-                throw new NroDocumentoInvalido("El campo ‘nroDocumento’ solo puede contener números enteros.");
+                throw new NroDocumentoInvalidoException("El campo ‘nroDocumento’ solo puede contener números enteros.");
             }
         }
     }
@@ -110,7 +110,8 @@ public class ValidacionJornada {
 
         // Sumar las horas trabajadas en la semana
         int horasTotalesSemanales = horasTrabajadas + jornadasDeLaSemana.stream()
-                .mapToInt(Jornada::getHorasTrabajadas)
+                .filter(Objects::nonNull) // Filtra cualquier elemento nulo en la lista
+                .mapToInt(jornada -> jornada.getHorasTrabajadas() != null ? jornada.getHorasTrabajadas() : 0) // Maneja posibles valores null
                 .sum();
 
         System.out.println("Total de horas trabajadas en la semana: " + horasTotalesSemanales);
@@ -126,7 +127,8 @@ public class ValidacionJornada {
 
         List<Jornada> jornadasDelMes = jornadaRepository.findByEmpleadoIdAndFechaBetween(empleado.getId(), startOfMonth, endOfMonth);
         int horasTotalesMensuales = horasTrabajadas + jornadasDelMes.stream()
-                .mapToInt(Jornada::getHorasTrabajadas)
+                .filter(Objects::nonNull) // Filtra cualquier elemento nulo en la lista
+                .mapToInt(jornada -> jornada.getHorasTrabajadas() != null ? jornada.getHorasTrabajadas() : 0) // Maneja posibles valores null
                 .sum();
 
         System.out.println("Total de horas trabajadas en la mensuales: " + horasTotalesMensuales);

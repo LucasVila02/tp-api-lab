@@ -4,7 +4,6 @@ package com.lucasvila.tp_api.controllers;
 import com.lucasvila.tp_api.dto.JornadaRequestDTO;
 import com.lucasvila.tp_api.dto.JornadaResponseDTO;
 import com.lucasvila.tp_api.entities.Jornada;
-import com.lucasvila.tp_api.mapper.Mapper;
 import com.lucasvila.tp_api.services.JornadaServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ public class JornadaController {
     @Autowired
     private JornadaServices services;
 
-    private Mapper mapper;
 
     @GetMapping("/jornadas")
     public ResponseEntity<?> getJornadas(
@@ -40,7 +38,6 @@ public class JornadaController {
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(jornadaResponseDTOs);
-
     }
 
     @PostMapping("/jornada")

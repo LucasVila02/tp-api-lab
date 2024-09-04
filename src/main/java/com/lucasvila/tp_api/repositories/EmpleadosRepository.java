@@ -5,13 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmpleadosRepository extends JpaRepository<Empleado, Long> {
 
-    boolean existsByNumeroDocumento(Integer nro);
+    boolean existsByNroDocumento(Integer nro);
 
     boolean existsByEmail(String email);
 
-    boolean existsByNumeroDocumentoAndIdNot(Integer numeroDocumento, Long id);
+    boolean existsByNroDocumentoAndIdNot(Integer nroDocumento, Long id);
 
-    boolean existsByEmailAndIdNot(String numeroDocumento, Long id);
+    boolean existsByEmailAndIdNot(String nroDocumento, Long id);
 
 
 }
