@@ -1,7 +1,6 @@
 package com.lucasvila.tp_api.controllers;
 
 import com.lucasvila.tp_api.dto.EmpleadoDTO;
-import com.lucasvila.tp_api.repositories.JornadaRepository;
 import com.lucasvila.tp_api.services.EmpleadosServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,6 @@ public class EmpleadoController {
 
     @Autowired
     private EmpleadosServices services;
-//
-    @Autowired
-    private JornadaRepository jornadaRepository;
 
     @GetMapping("/empleado")
     public List<EmpleadoDTO> findAll(){

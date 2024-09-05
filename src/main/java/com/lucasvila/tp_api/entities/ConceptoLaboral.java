@@ -52,4 +52,15 @@ public class ConceptoLaboral {
     public int hashCode() {
         return Objects.hash(id, nombre, laborable, hsMaximo, hsMinimo);
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", laborable=" + laborable +
+                ", hsMaximo=" + hsMaximo +
+                ", hsMinimo=" + hsMinimo +
+                '}';
+    }
 }

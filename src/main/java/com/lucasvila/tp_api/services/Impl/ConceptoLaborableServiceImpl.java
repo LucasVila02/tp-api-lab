@@ -35,6 +35,7 @@ public class ConceptoLaborableServiceImpl implements ConceptoLaborableServices {
         } else {
             concepto = repository.findAll();
         }
+
         return concepto.stream().map(ConceptoLaboral::toDTO).collect(Collectors.toList());
 
     }

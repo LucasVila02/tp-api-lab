@@ -5,7 +5,6 @@ import com.lucasvila.tp_api.dto.JornadaRequestDTO;
 import com.lucasvila.tp_api.dto.JornadaResponseDTO;
 import com.lucasvila.tp_api.entities.Jornada;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface JornadaServices {

@@ -90,21 +90,21 @@ public class JornadaServiceImpl implements JornadaServices {
         ConceptoLaboral concepto = conceptoLaboralRepository.findById(jornadaDto.getConcepto())
                 .orElseThrow(() -> new NoEncontradoException(jornadaDto.getConcepto(), "concepto"));
 
-        validacionJornada.validarHorasTrabajadas(concepto, jornadaDto.getHorasTrabajadas());
+        validacionJornada.validarHorasTrabajadas(concepto, jornadaDto.getHsTrabajadas());
 
         Empleado empleado = empleadoRepository.findById(jornadaDto.getEmpleado())
                 .orElseThrow(() -> new NoEncontradoException(jornadaDto.getEmpleado(), "empleado"));
 
         if (concepto.getId() != 3){
-            validacionJornada.validarHorasDiarias(empleado, jornadaDto.getFecha(), jornadaDto.getHorasTrabajadas());//ok
-            validacionJornada.validarHorasSemanales(empleado, jornadaDto.getHorasTrabajadas(), jornadaDto.getFecha());//ok
-            validacionJornada.validarHorasMensuales(empleado, jornadaDto.getHorasTrabajadas(), jornadaDto.getFecha());//ok
+            validacionJornada.validarHorasDiarias(empleado, jornadaDto.getFecha(), jornadaDto.getHsTrabajadas());//ok
+            validacionJornada.validarHorasSemanales(empleado, jornadaDto.getHsTrabajadas(), jornadaDto.getFecha());//ok
+            validacionJornada.validarHorasMensuales(empleado, jornadaDto.getHsTrabajadas(), jornadaDto.getFecha());//ok
         }
         if (esTurnoExtra) {
             validacionJornada.validarTurnosExtraSemanales(empleado, jornadaDto.getFecha(), true);
         }
 
-        validacionJornada.validarRangoHoras(concepto, jornadaDto.getHorasTrabajadas()); //ok
+        validacionJornada.validarRangoHoras(concepto, jornadaDto.getHsTrabajadas()); //ok
         validacionJornada.validarDiaLibre(empleado, jornadaDto.getFecha());//ok
         validacionJornada.validarTurnosNormalesSemanales(empleado, jornadaDto.getFecha());//ok
         validacionJornada.validarDiasLibresSemanales(empleado, jornadaDto.getFecha());//funciona
@@ -117,7 +117,7 @@ public class JornadaServiceImpl implements JornadaServices {
         jornada.setEmpleado(empleado);
         jornada.setConceptoLaboral(concepto);
         jornada.setFecha(jornadaDto.getFecha());
-        jornada.setHorasTrabajadas(jornadaDto.getHorasTrabajadas());
+        jornada.setHsTrabajadas(jornadaDto.getHsTrabajadas());
 
         // Guardar la jornada y mapear a DTO de respuesta
         jornada = jornadaRepository.save(jornada);

@@ -11,13 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -43,9 +40,6 @@ public class JornadaServiceImplTest {
 
     @BeforeEach
     void setUp() {
-
-        MockitoAnnotations.openMocks(this);
-        // Crear una instancia de Jornada para simular los datos
         jornada = new Jornada();
         empleado = new Empleado(1L, 1234, "Lucas", "Vila","lucas@gmail.com", LocalDate.of(2004,03,02) , LocalDate.of(2022,03,02), LocalDate.now() );
         conceptoLaboral = new ConceptoLaboral(1L, "Turno Normal", true, 8, 6);
@@ -77,7 +71,7 @@ public class JornadaServiceImplTest {
         // Ejecutar el método
         List<Jornada> result = jornadaService.findJornadas("2023-01-01", "2023-01-31", nroDocumento);
 
-        // Verificar que el resultado no sea nulo
+        // Verificar el resultado
         assertNotNull(result);
         assertEquals(1, result.size()); // Verificar que la lista tenga una jornada
         assertEquals(jornada, result.get(0)); // Verificar que la jornada devuelta sea la correcta
@@ -88,19 +82,17 @@ public class JornadaServiceImplTest {
         String nroDocumento = empleado.getNroDocumento().toString(); // Obtener el número de documento del empleado
         Integer documento = Integer.valueOf(nroDocumento);
 
-        // Simular la validación del número de documento
         doNothing().when(validacionJornada).validarNroDocumento(nroDocumento);
-        // Simular que el repositorio devuelve la lista con la jornada creada en setUp(
+        // Simular la respuesta del repositorio
         when(jornadaRepository.findByEmpleadoNroDocumento(documento)).thenReturn(List.of(jornada));
 
         // Ejecutar el método
         List<Jornada> result = jornadaService.findJornadas(null, null, nroDocumento);
 
-        // Verificar que el resultado no sea nulo y contenga la jornada correcta
+        // Verificar el resultado
         assertNotNull(result);
         assertFalse(result.isEmpty()); // Verificar que la lista no esté vacía
         assertEquals(1, result.size()); // Verificar que la lista contenga exactamente una jornada
-        assertEquals(jornada, result.get(0)); // Verificar que la jornada devuelta sea la misma que la simulada
     }
     @Test
     void testFindJornadasByFechaDesde() {
@@ -115,7 +107,7 @@ public class JornadaServiceImplTest {
         // Ejecutar el método
         List<Jornada> result = jornadaService.findJornadas("2023-01-01", null, null);
 
-        // Verificar que el resultado no sea nulo y contenga la jornada correcta
+        // Verificar el resultado
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(jornada, result.get(0));

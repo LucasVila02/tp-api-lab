@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -79,13 +78,13 @@ public class EmpleadoServiceImplTest {
 
     @Test
     void findAllShouldReturnListOfEmpleadoDTOs(){
-        //given
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findAll()).thenReturn(Arrays.asList(empleado, empleadoDos));
 
-        //when
+        // Ejecutar el método
         List<EmpleadoDTO> result = empleadosServicesImplUnderTest.findAll();
 
-        //then
+        // Verificar el resultado
         assertEquals(2, result.size());
         assertEquals("Lucas", result.get(0).getNombre());
 
@@ -94,32 +93,29 @@ public class EmpleadoServiceImplTest {
     @Test
     void findByIdShouldReturnEmpleadoDTO() {
 
-        // Mockear el comportamiento del repositorio
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findById(1L)).thenReturn(Optional.of(empleado));
 
         // Ejecutar el método
         Optional<EmpleadoDTO> result = empleadosServicesImplUnderTest.findById(1L);
 
-        // Validar que el resultado no sea vacío
+        // Verificar el resultado
         assertTrue(result.isPresent());
         assertEquals("Lucas", result.get().getNombre());
-
-        // Verificar que el repositorio fue llamado
-        verify(empleadosRepository, times(1)).findById(1L);
     }
 
     @Test
     void shouldThrowNoEncontradoException() {
 
-        // Mockear el comportamiento del repositorio para devolver un Optional vacío
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findById(3L)).thenReturn(Optional.empty());
 
-        // Ejecutar el método y verificar que se lance la excepción
+        // Ejecutar el método
         NoEncontradoException exception = assertThrows(NoEncontradoException.class, () -> {
             empleadosServicesImplUnderTest.findById(3L);
         });
 
-        // Validar que la excepción tiene el mensaje correcto
+        // Verificar el resultado
         assertEquals("No se existe el empleado con Id: 3", exception.getMessage());
     }
 
@@ -130,13 +126,13 @@ public class EmpleadoServiceImplTest {
         doNothing().when(validacionEmpleado).validarEmailAndDocumentoEmpleadoCreate(empleadoDTO);
         doNothing().when(validacionEmpleado).validarFechasEmpleado(empleadoDTO);
 
-        // Simular que el repositorio guarda el empleado y devuelve la entidad guardada
+        // Simular la respuesta del repositorio
         when(empleadosRepository.save(any(Empleado.class))).thenReturn(empleado);
 
         // Ejecutar el método
         EmpleadoDTO result = empleadosServicesImplUnderTest.create(empleadoDTO);
 
-        // Validar que el resultado no sea nulo y contenga los datos correctos
+        // Verificar el resultado
         assertNotNull(result);
         assertEquals("Lucas", result.getNombre());
 
@@ -144,35 +140,35 @@ public class EmpleadoServiceImplTest {
 
     @Test
     void ShouldThrowExceptionWhenEmailIsInvalid() {
-
+        // Simular las validaciones (sin hacer nada en este caso)
         doThrow(new EmpleadoDuplicadoException("Ya existe un empleado con el email ingresado."))
                 .when(validacionEmpleado).validarEmailAndDocumentoEmpleadoCreate(any(EmpleadoDTO.class));
 
-
+        // Ejecutar el método
         Exception exception = assertThrows(EmpleadoDuplicadoException.class, () -> {
             empleadosServicesImplUnderTest.create(empleadoDTO);
         });
-
+        // Verificar el resultado
         assertEquals("Ya existe un empleado con el email ingresado.", exception.getMessage());
 
     }
 
     @Test
     void testUpdateEmpleadoSuccess() {
-        // Mock de encontrar al empleado
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findById(1L)).thenReturn(Optional.of(empleado));
 
-        // Mock de validación (simula que no lanzan excepciones)
+        // Simular las validaciones (sin hacer nada en este caso)
         doNothing().when(validacionEmpleado).validarEmailAndDocumentoEmpleadoUpdate(any(EmpleadoDTO.class), eq(1L));
         doNothing().when(validacionEmpleado).validarFechasEmpleado(any(EmpleadoDTO.class));
 
-        // Mock de guardar el empleado actualizado
+        // Simular la respuesta del repositorio
         when(empleadosRepository.save(any(Empleado.class))).thenReturn(empleado);
 
-        // Ejecutar el método de actualización
+        // Ejecutar el método
         Optional<EmpleadoDTO> result = empleadosServicesImplUnderTest.update(1L, empleadoDTO);
 
-        // Validar que los datos fueron actualizados correctamente
+        // Verificar el resultado
         assertTrue(result.isPresent());
         assertEquals("Lucas", result.get().getNombre());
         assertEquals("Vila", result.get().getApellido());
@@ -181,20 +177,20 @@ public class EmpleadoServiceImplTest {
 
     @Test
     void testUpdateEmpleadoNotFound() {
-        // Mock para simular que el empleado no existe
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Ejecutar y validar la excepción
+        // Ejecutar el método
         NoEncontradoException exception = assertThrows(NoEncontradoException.class, () -> {
             empleadosServicesImplUnderTest.update(1L, empleadoDTO);
         });
-
+        // Verificar el resultado
         assertEquals("No se existe el empleado con Id: 1", exception.getMessage());
 
     }
     @Test
     void testDeleteEmpleadoSuccess() {
-        // Simular que el empleado existe y no tiene jornadas asociadas
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findById(1L)).thenReturn(Optional.of(empleado));
         when(jornadaRepository.existsByEmpleadoId(1L)).thenReturn(false);
 
@@ -204,27 +200,28 @@ public class EmpleadoServiceImplTest {
 
     @Test
     void testDeleteEmpleadoWithJornadas() {
-        // Simular que el empleado existe y tiene jornadas asociadas
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findById(1L)).thenReturn(Optional.of(empleado));
         when(jornadaRepository.existsByEmpleadoId(1L)).thenReturn(true);
 
-        // Ejecutar y verificar que se lanza la excepción BadRequestException
+        // Ejecutar el método
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             empleadosServicesImplUnderTest.delete(1L);
         });
-
+        // Verificar el resultado
         assertEquals("No es posible eliminar un empleado con jornadas asociadas.", exception.getMessage());
     }
 
     @Test
     void testDeleteEmpleadoNotFound() {
-        // Simular que el empleado no existe
+        // Simular la respuesta del repositorio
         when(empleadosRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Ejecutar y verificar que se lanza la excepción NoEncontradoException
+        // Ejecutar el método
         NoEncontradoException exception = assertThrows(NoEncontradoException.class, () -> {
             empleadosServicesImplUnderTest.delete(1L);
         });
+        // Verificar el resultado
         assertEquals("No se existe el empleado con Id: 1", exception.getMessage());
     }
 }

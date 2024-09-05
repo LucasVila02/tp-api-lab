@@ -33,6 +33,7 @@ public class EmpleadosServiceImpl implements EmpleadosServices {
     @Override
     public List<EmpleadoDTO> findAll() {
         List<Empleado> empleados = empleadosRepository.findAll();
+
         return empleados.stream()
                 .map(Empleado::toDTO)
                 .collect(Collectors.toList());

@@ -91,13 +91,14 @@ public class ValidacionJornada {
 
         // Calcular el total de horas trabajadas en el día
         int horasTotalesDelDia = horasTrabajadas + jornadasDelDia.stream()
-                .mapToInt(Jornada::getHorasTrabajadas)
+                .mapToInt(Jornada::getHsTrabajadas)
                 .sum();
 
         // Verificar si las horas totales del día exceden el límite permitido
         if (horasTotalesDelDia > 14) {
             throw new HorasTurnosInvalidoException("Un empleado no puede cargar más de 14 horas trabajadas en un día.");
         }
+        System.out.println("Total de horas trabajadas en el dia: " + horasTotalesDelDia);
     }
 
     public void validarHorasSemanales(Empleado empleado, Integer horasTrabajadas, LocalDate fecha) {
@@ -112,15 +113,15 @@ public class ValidacionJornada {
         // Sumar las horas trabajadas en la semana
         int horasTotalesSemanales = horasTrabajadas + jornadasDeLaSemana.stream()
                 .filter(Objects::nonNull) // Filtra cualquier elemento nulo en la lista
-                .mapToInt(jornada -> jornada.getHorasTrabajadas() != null ? jornada.getHorasTrabajadas() : 0) // Maneja posibles valores null
+                .mapToInt(jornada -> jornada.getHsTrabajadas() != null ? jornada.getHsTrabajadas() : 0) // Maneja posibles valores null
                 .sum();
-
-        System.out.println("Total de horas trabajadas en la semana: " + horasTotalesSemanales);
 
         // Verificar si supera las 52 horas
         if (horasTotalesSemanales > 52) {
             throw new HorasTurnosInvalidoException("El empleado ingresado supera las 52 horas semanales.");
         }
+
+        System.out.println("Total de horas trabajadas en la semana: " + horasTotalesSemanales);
     }
     public void validarHorasMensuales(Empleado empleado, Integer horasTrabajadas, LocalDate fecha) {
         LocalDate startOfMonth = fecha.with(TemporalAdjusters.firstDayOfMonth());
@@ -129,13 +130,13 @@ public class ValidacionJornada {
         List<Jornada> jornadasDelMes = jornadaRepository.findByEmpleadoIdAndFechaBetween(empleado.getId(), startOfMonth, endOfMonth);
         int horasTotalesMensuales = horasTrabajadas + jornadasDelMes.stream()
                 .filter(Objects::nonNull) // Filtra cualquier elemento nulo en la lista
-                .mapToInt(jornada -> jornada.getHorasTrabajadas() != null ? jornada.getHorasTrabajadas() : 0) // Maneja posibles valores null
+                .mapToInt(jornada -> jornada.getHsTrabajadas() != null ? jornada.getHsTrabajadas() : 0) // Maneja posibles valores null
                 .sum();
 
-        System.out.println("Total de horas trabajadas en la mensuales: " + horasTotalesMensuales);
         if (horasTotalesMensuales > 190) {
             throw new HorasTurnosInvalidoException("El empleado ingresado supera las 190 horas mensuales.");
         }
+        System.out.println("Total de horas trabajadas en el mes: " + horasTotalesMensuales);
     }
 
     public void validarTurnosExtraSemanales(Empleado empleado, LocalDate fecha, boolean esTurnoExtra) {
@@ -154,23 +155,20 @@ public class ValidacionJornada {
         if (esTurnoExtra && cantidadTurnosExtra >= 3) {
             throw new HorasTurnosInvalidoException("El empleado ingresado ya cuenta con 3 turnos extra esta semana.");
         }
+
     }
 
     public void validarDiaLibre(Empleado empleado, LocalDate fecha) {
         // Obtener jornadas del día para el empleado
         List<Jornada> jornadasDelDia = jornadaRepository.findByEmpleadoIdAndFecha(empleado.getId(), fecha);
 
-
         // Verificar si ya hay una jornada registrada en la fecha
         boolean tieneHorasDeTrabajo1 = jornadasDelDia.stream()
                 .anyMatch(j -> (j.getEmpleado().getId() == 1L && j.getConceptoLaboral().getId() == 2L));
 
-
         if (tieneHorasDeTrabajo1 ) {
             throw new HorasTurnosInvalidoException("El empleado ya tiene una jornada de trabajo registrada en esta fecha y no puede agregar un día libre.");
         }
-
-
 
         // Verificar si ya tiene un día libre en la fecha
         boolean tieneDiaLibre = jornadasDelDia.stream()
@@ -197,6 +195,8 @@ public class ValidacionJornada {
         if (countTurnosNormales >= 5) {
             throw new HorasTurnosInvalidoException("El empleado ingresado ya cuenta con 5 turnos normales esta semana.");
         }
+
+
     }
 
     public void validarDiasLibresSemanales(Empleado empleado, LocalDate fecha) {
@@ -209,6 +209,7 @@ public class ValidacionJornada {
         if (diasLibres.size() >= 2) {
             throw new HorasTurnosInvalidoException("El empleado no cuenta con más días libres esta semana.");
         }
+
     }
 
     public void validarDiasLibresMensuales(Empleado empleado, LocalDate fecha) {
@@ -222,6 +223,7 @@ public class ValidacionJornada {
             throw new HorasTurnosInvalidoException("El empleado no cuenta con más días libres este mes.");
         }
     }
+
     public void validarNumeroDeEmpleadosPorConcepto(ConceptoLaboral concepto, LocalDate fecha) {
         long empleadosRegistrados = jornadaRepository.countByConceptoLaboralAndFecha(concepto, fecha);
 

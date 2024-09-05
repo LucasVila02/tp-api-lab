@@ -3,19 +3,14 @@ package com.lucasvila.tp_api.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
-import java.util.Objects;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class JornadaRequestDTO {
-
 
     private Long id;
 
@@ -30,20 +25,6 @@ public class JornadaRequestDTO {
     @NotNull(message = "'fecha' es obligatorio.")
     private LocalDate fecha;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("hsTrabajadas")
-    private Integer horasTrabajadas;
+    private Integer hsTrabajadas;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        JornadaRequestDTO that = (JornadaRequestDTO) o;
-        return Objects.equals(id, that.id) && Objects.equals(concepto, that.concepto) && Objects.equals(empleado, that.empleado) && Objects.equals(fecha, that.fecha) && Objects.equals(horasTrabajadas, that.horasTrabajadas);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, concepto, empleado, fecha, horasTrabajadas);
-    }
 }

@@ -19,11 +19,17 @@ public class Empleado {
     private Long id;
 
     private Integer nroDocumento;
+
     private String nombre;
+
     private String apellido;
+
     private String email;
+
     private LocalDate fechaNacimiento;
+
     private LocalDate fechaIngreso;
+
     private LocalDate fechaCreacion;
 
     @PrePersist
