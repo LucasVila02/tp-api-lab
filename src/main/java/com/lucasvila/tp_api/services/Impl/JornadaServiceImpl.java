@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 
 @Service
-public class JornadaServicesImpl implements JornadaServices {
+public class JornadaServiceImpl implements JornadaServices {
 
     @Autowired
     private JornadaRepository jornadaRepository;

@@ -38,7 +38,7 @@ public class Empleado {
         dto.setApellido(this.apellido);
         dto.setEmail(this.email);
         dto.setFechaIngreso(this.fechaIngreso);
-        dto.setNumeroDocumento(this.nroDocumento);
+        dto.setNroDocumento(this.nroDocumento);
         dto.setFechaNacimiento(this.fechaNacimiento);
         dto.setFechaCreacion(this.fechaCreacion);
         return dto;

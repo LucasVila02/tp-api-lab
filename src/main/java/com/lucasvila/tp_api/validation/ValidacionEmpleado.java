@@ -1,9 +1,7 @@
 package com.lucasvila.tp_api.validation;
 
 import com.lucasvila.tp_api.dto.EmpleadoDTO;
-import com.lucasvila.tp_api.exceptions.EdadInvalidaException;
-import com.lucasvila.tp_api.exceptions.EmpleadoDuplicadoException;
-import com.lucasvila.tp_api.exceptions.FechaInvalidaException;
+import com.lucasvila.tp_api.exceptions.*;
 import com.lucasvila.tp_api.repositories.EmpleadosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ public class ValidacionEmpleado {
 
     public void validarEmailAndDocumentoEmpleadoCreate(EmpleadoDTO empleadoDto) {
         // Validación de documento duplicado
-        if (empleadosRepository.existsByNroDocumento(empleadoDto.getNumeroDocumento())) {
+        if (empleadosRepository.existsByNroDocumento(empleadoDto.getNroDocumento())) {
             throw new EmpleadoDuplicadoException("Ya existe un empleado con el documento ingresado.");
         }
         // Validación de email duplicado
@@ -32,7 +30,7 @@ public class ValidacionEmpleado {
 
     public void validarEmailAndDocumentoEmpleadoUpdate(EmpleadoDTO empleadoDto, Long id){
         // Validación de documento duplicado
-        if (empleadosRepository.existsByNroDocumentoAndIdNot(empleadoDto.getNumeroDocumento(), id) ) {
+        if (empleadosRepository.existsByNroDocumentoAndIdNot(empleadoDto.getNroDocumento(), id) ) {
             throw new EmpleadoDuplicadoException( "Ya existe un empleado con el documento ingresado.");
         }
         // Validación de email duplicado

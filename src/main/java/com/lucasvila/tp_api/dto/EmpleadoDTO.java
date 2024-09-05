@@ -17,7 +17,7 @@ public class EmpleadoDTO {
 
     @JsonProperty("nroDocumento")
     @NotNull(message = "'nroDocumento' es obligatorio.")
-    private Integer numeroDocumento;
+    private Integer nroDocumento;
 
     @ValidName(message = "Solo se permiten letras en el campo ‘nombre’.")
     @NotNull(message = "'nombre' es obligatorio.")
@@ -50,7 +50,7 @@ public class EmpleadoDTO {
         empleado.setApellido(this.apellido);
         empleado.setEmail(this.email);
         empleado.setFechaIngreso(this.fechaIngreso);
-        empleado.setNroDocumento(this.numeroDocumento);
+        empleado.setNroDocumento(this.nroDocumento);
         empleado.setFechaNacimiento(this.fechaNacimiento);
         empleado.setFechaCreacion(this.fechaCreacion);
         return empleado;
@@ -60,7 +60,7 @@ public class EmpleadoDTO {
     @Override
     public String toString() {
         return "EmpleadoDto{" +
-                "numeroDocumento=" + numeroDocumento +
+                "numeroDocumento=" + nroDocumento +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
                 ", email='" + email + '\'' +
@@ -74,11 +74,11 @@ public class EmpleadoDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EmpleadoDTO that = (EmpleadoDTO) o;
-        return id == that.id && Objects.equals(numeroDocumento, that.numeroDocumento) && Objects.equals(nombre, that.nombre) && Objects.equals(apellido, that.apellido) && Objects.equals(email, that.email) && Objects.equals(fechaNacimiento, that.fechaNacimiento) && Objects.equals(fechaIngreso, that.fechaIngreso) && Objects.equals(fechaCreacion, that.fechaCreacion);
+        return id == that.id && Objects.equals(nroDocumento, that.nroDocumento) && Objects.equals(nombre, that.nombre) && Objects.equals(apellido, that.apellido) && Objects.equals(email, that.email) && Objects.equals(fechaNacimiento, that.fechaNacimiento) && Objects.equals(fechaIngreso, that.fechaIngreso) && Objects.equals(fechaCreacion, that.fechaCreacion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, numeroDocumento, nombre, apellido, email, fechaNacimiento, fechaIngreso, fechaCreacion);
+        return Objects.hash(id, nroDocumento, nombre, apellido, email, fechaNacimiento, fechaIngreso, fechaCreacion);
     }
 }

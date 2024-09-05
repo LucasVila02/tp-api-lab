@@ -1,8 +1,6 @@
 package com.lucasvila.tp_api.services;
 
 import com.lucasvila.tp_api.dto.EmpleadoDTO;
-import com.lucasvila.tp_api.entities.Empleado;
-
 
 
 import java.util.List;
@@ -19,5 +17,5 @@ public interface EmpleadosServices {
 
     Optional<EmpleadoDTO> update(Long id, EmpleadoDTO empleadoDto);
 
-    Optional<Empleado> delete(Long id);
+    void delete(Long id);
 }

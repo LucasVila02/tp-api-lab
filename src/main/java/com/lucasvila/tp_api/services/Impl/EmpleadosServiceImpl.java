@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class EmpleadosServicesImpl implements EmpleadosServices {
+public class EmpleadosServiceImpl implements EmpleadosServices {
 
     @Autowired
     private EmpleadosRepository empleadosRepository;
@@ -27,6 +27,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
     @Autowired
     private ValidacionEmpleado validacionEmpleado;
+
 
     @Transactional(readOnly = true)
     @Override
@@ -40,6 +41,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
     @Transactional(readOnly = true)
     @Override
     public Optional<EmpleadoDTO> findById(Long id) {
+
         return empleadosRepository.findById(id)
                 .map(Empleado::toDTO)
                 .or(() -> {
@@ -72,7 +74,7 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
             empleado.setNombre(empleadoDto.getNombre());
             empleado.setApellido(empleadoDto.getApellido());
             empleado.setEmail(empleadoDto.getEmail());
-            empleado.setNroDocumento(empleadoDto.getNumeroDocumento());
+            empleado.setNroDocumento(empleadoDto.getNroDocumento());
             empleado.setFechaNacimiento(empleadoDto.getFechaNacimiento());
             empleado.setFechaIngreso(empleadoDto.getFechaIngreso());
 
@@ -83,16 +85,15 @@ public class EmpleadosServicesImpl implements EmpleadosServices {
 
     @Transactional
     @Override
-    public Optional<Empleado> delete(Long id) {
+    public void delete(Long id) {
+
         Empleado empleado = empleadosRepository.findById(id)
                 .orElseThrow(() -> new NoEncontradoException(id, "empleado"));
 
         if (jornadaRepository.existsByEmpleadoId(id)) {
             throw new BadRequestException("No es posible eliminar un empleado con jornadas asociadas.");
         }
-        // Elimina el empleado si no tiene jornadas asociadas
         empleadosRepository.delete(empleado);
-        return Optional.of(empleado); // Retorna el empleado eliminado
     }
 
 }
