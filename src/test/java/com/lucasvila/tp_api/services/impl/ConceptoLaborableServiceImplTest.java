@@ -6,10 +6,14 @@ import com.lucasvila.tp_api.repositories.ConceptoLaborableRepository;
 import com.lucasvila.tp_api.services.Impl.ConceptoLaborableServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class ConceptoLaborableServiceImplTest {
+
     @Mock
     private ConceptoLaborableRepository conceptoLaborableRepository;
 
@@ -26,14 +32,10 @@ public class ConceptoLaborableServiceImplTest {
     private ConceptoLaborableServiceImpl conceptoLaboralServiceImplTest;
 
     private ConceptoLaboral conceptoLaboral;
-
-    private ConceptoLaboralDTO conceptoLaboralDTO;
+    private ConceptoLaboral conceptoLaboralDos;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        // Crear una instancia de ConceptoLaboral para simular los datos
         conceptoLaboral = new ConceptoLaboral();
         conceptoLaboral.setId(1L);
         conceptoLaboral.setNombre("Turno Normal");
@@ -41,20 +43,19 @@ public class ConceptoLaborableServiceImplTest {
         conceptoLaboral.setHsMaximo(8);
         conceptoLaboral.setLaborable(true);
 
-        conceptoLaboralDTO = new ConceptoLaboralDTO();
-        conceptoLaboralDTO.setId(1L);
-        conceptoLaboralDTO.setNombre("Turno Normal");
-        conceptoLaboralDTO.setHsMinimo(6);
-        conceptoLaboralDTO.setHsMaximo(8);
-        conceptoLaboralDTO.setLaborable(true);
+        conceptoLaboralDos = new ConceptoLaboral();
+        conceptoLaboralDos.setId(2L);
+        conceptoLaboralDos.setNombre("Turno Extra");
+        conceptoLaboralDos.setHsMinimo(2);
+        conceptoLaboralDos.setHsMaximo(6);
+        conceptoLaboralDos.setLaborable(true);
 
-        // Configura el mock para el método toDTO
-        when(conceptoLaboral.toDTO()).thenReturn(conceptoLaboralDTO);
     }
 
     @Test
     void testGetConceptosByIdAndNombre() {
         Long id = 1L;
+        String nombre = "Turno Normal";
 
         // Simular la respuesta del repositorio
         when(conceptoLaborableRepository.findByIdAndNombreContainingIgnoreCase(id, nombre))
@@ -67,58 +68,58 @@ public class ConceptoLaborableServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(conceptoLaboral.getId(), result.get(0).getId());
+    }
+
+    @Test
+    void testGetConceptosById() {
+        Long id = 1L;
+
+        // Simular la respuesta del repositorio
+        when(conceptoLaborableRepository.findById(id))
+                .thenReturn(Optional.of(conceptoLaboral));
+
+        // Ejecutar el método
+        List<ConceptoLaboralDTO> result = conceptoLaboralServiceImplTest.getConceptos(id, null);
+
+        // Verificar el resultado
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(conceptoLaboral.getId(), result.get(0).getId());
         assertEquals(conceptoLaboral.getNombre(), result.get(0).getNombre());
     }
 
-//    @Test
-//    void testGetConceptosById() {
-//        Long id = 1L;
-//
-//        // Simular la respuesta del repositorio
-//        when(conceptoLaborableRepository.findById(id))
-//                .thenReturn(Optional.of(conceptoLaboral));
-//
-//        // Ejecutar el método
-//        List<ConceptoLaboralDTO> result = conceptoLaboralServiceImplTest.getConceptos(id, null);
-//
-//        // Verificar el resultado
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(conceptoLaboral.getId(), result.get(0).getId());
-//        assertEquals(conceptoLaboral.getNombre(), result.get(0).getNombre());
-//    }
-//
-//    @Test
-//    void testGetConceptosByNombre() {
-//        String nombre = "Concepto Test";
-//
-//        // Simular la respuesta del repositorio
-//        when(conceptoLaborableRepository.findByNombreContainingIgnoreCase(nombre))
-//                .thenReturn(Collections.singletonList(conceptoLaboral));
-//
-//        // Ejecutar el método
-//        List<ConceptoLaboralDTO> result = conceptoLaboralServiceImplTest.getConceptos(null, nombre);
-//
-//        // Verificar el resultado
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(conceptoLaboral.getId(), result.get(0).getId());
-//        assertEquals(conceptoLaboral.getNombre(), result.get(0).getNombre());
-//    }
-//
-//    @Test
-//    void testGetAllConceptos() {
-//        // Simular la respuesta del repositorio
-//        when(conceptoLaborableRepository.findAll())
-//                .thenReturn(Collections.singletonList(conceptoLaboral));
-//
-//        // Ejecutar el método
-//        List<ConceptoLaboralDTO> result =  conceptoLaboralServiceImplTest
-//        // Verificar el resultado
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(conceptoLaboral.getId(), result.get(0).getId());
-//        assertEquals(conceptoLaboral.getNombre(), result.get(0).getNombre());
-//    }
+    @Test
+    void testGetConceptosByNombre() {
+        String nombre = "Turno";
+
+        // Simular la respuesta del repositorio
+        when(conceptoLaborableRepository.findByNombreContainingIgnoreCase(nombre))
+                .thenReturn(Arrays.asList(conceptoLaboral, conceptoLaboralDos));
+
+        // Ejecutar el método
+        List<ConceptoLaboralDTO> result = conceptoLaboralServiceImplTest.getConceptos(null, nombre);
+
+        // Verificar el resultado
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(conceptoLaboral.getId(), result.get(0).getId());
+        assertEquals(conceptoLaboralDos.getId(), result.get(1).getId());
+
+    }
+
+    @Test
+    void testGetAllConceptos() {
+        // Simular la respuesta del repositorio
+        when(conceptoLaborableRepository.findAll())
+                .thenReturn(Arrays.asList(conceptoLaboral, conceptoLaboralDos));
+
+        // Ejecutar el método
+        List<ConceptoLaboralDTO> result =  conceptoLaboralServiceImplTest.getConceptos(null, null);
+        // Verificar el resultado
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(conceptoLaboral.getId(), result.get(0).getId());
+        assertEquals(conceptoLaboralDos.getId(), result.get(1).getId());
+    }
 
 }
