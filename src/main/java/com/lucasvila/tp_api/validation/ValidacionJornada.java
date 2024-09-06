@@ -26,6 +26,9 @@ public class ValidacionJornada {
     @Autowired
     private JornadaRepository jornadaRepository;
 
+    // ===================
+    // Métodos de Validación de Fechas
+    // ===================
 
     public void validarFechas(LocalDate fechaDesde, LocalDate fechaHasta) {
         // Validación de las fechas
@@ -34,15 +37,6 @@ public class ValidacionJornada {
         }
     }
 
-    public void validarNroDocumento(String nroDocumento) {
-        if (nroDocumento != null) {
-            try {
-                Integer.parseInt(nroDocumento);
-            } catch (NumberFormatException e) {
-                throw new NroDocumentoInvalidoException("El campo ‘nroDocumento’ solo puede contener números enteros.");
-            }
-        }
-    }
     public LocalDate validarFormatoFecha(String fechaStr) {
         if (fechaStr != null) {
             try {
@@ -54,6 +48,22 @@ public class ValidacionJornada {
         return null;
     }
 
+    // ===================
+    // Métodos de Validación de Números
+    // ===================
+
+    public void validarNroDocumento(String nroDocumento) {
+        if (nroDocumento != null) {
+            try {
+                Integer.parseInt(nroDocumento);
+            } catch (NumberFormatException e) {
+                throw new NroDocumentoInvalidoException("El campo ‘nroDocumento’ solo puede contener números enteros.");
+            }
+        }
+    }
+    // ===================
+    // Métodos de Validación de Horas
+    // ===================
 
     public void validarHorasTrabajadas(ConceptoLaboral concepto, Integer horasTrabajadas) {
         if (isTurnoNormalOrExtra(concepto) && horasTrabajadas == null) {
@@ -143,6 +153,10 @@ public class ValidacionJornada {
         System.out.println("Total de horas trabajadas en el mes: " + horasTotalesMensuales);
     }
 
+    // ===================
+    // Métodos de Validación de Turnos
+    // ===================
+
     public void validarTurnosExtraSemanales(Empleado empleado, LocalDate fecha, boolean esTurnoExtra) {
         LocalDate startOfWeek = fecha.with(DayOfWeek.MONDAY);
         LocalDate endOfWeek = fecha.with(DayOfWeek.SUNDAY);
@@ -227,6 +241,11 @@ public class ValidacionJornada {
             throw new HorasTurnosInvalidoException("El empleado no cuenta con más días libres este mes.");
         }
     }
+
+
+    // ===================
+    // Métodos de Auxiliares
+    // ===================
 
     public void validarNumeroDeEmpleadosPorConcepto(ConceptoLaboral concepto, LocalDate fecha) {
         long empleadosRegistrados = jornadaRepository.countByConceptoLaboralAndFecha(concepto, fecha);

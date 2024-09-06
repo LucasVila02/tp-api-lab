@@ -21,7 +21,7 @@ public class JornadaController {
     @Autowired
     private JornadaServices services;
 
-    @GetMapping("/jornadas")
+    @GetMapping("/jornada")
     public ResponseEntity<?> getJornadas(
             @RequestParam(required = false)  String fechaDesde,
             @RequestParam(required = false)  String fechaHasta,

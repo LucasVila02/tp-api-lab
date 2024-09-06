@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "2aba487c-2251-44b5-8a9a-a8ad18289194",
-		"name": "TpApiLab",
+		"_postman_id": "7a30bd2f-3879-42e1-be9f-959bbe3740ea",
+		"name": "Collection TP API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "27554086"
 	},
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n    {\r\n        \"nroDocumento\": 3123,\r\n        \"nombre\": \"Jose\" ,\r\n        \"apellido\": \"Perez\",\r\n        \"email\": \"Jose@gmail.com\",    \r\n        \"fechaNacimiento\": \"2005-01-01\",\r\n        \"fechaIngreso\": \"2022-12-02\"\r\n    }\r\n\r\n\r\n",
+					"raw": "\r\n    {\r\n        \"nroDocumento\": 1,\r\n        \"nombre\": \"Jose\" ,\r\n        \"apellido\": \"Perez\",\r\n        \"email\": \"Jose@gmail.com\",    \r\n        \"fechaNacimiento\": \"2005-01-01\",\r\n        \"fechaIngreso\": \"2022-12-02\"\r\n    }\r\n\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -31,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n    {\r\n        \"nroDocumento\": 123,\r\n        \"nombre\": \"Lucas\" ,\r\n        \"apellido\": \"Martinez\",\r\n        \"email\": \"Lucas@gmail.com\",    \r\n        \"fechaNacimiento\": \"2001-01-01\",\r\n        \"fechaIngreso\": \"2019-12-02\"\r\n    }\r\n\r\n",
+					"raw": "\r\n    {\r\n        \"nroDocumento\": 2,\r\n        \"nombre\": \"Lucas\" ,\r\n        \"apellido\": \"Martinez\",\r\n        \"email\": \"Lucas@gmail.com\",    \r\n        \"fechaNacimiento\": \"2001-01-01\",\r\n        \"fechaIngreso\": \"2019-12-02\"\r\n    }\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,7 +76,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n        \"nroDocumento\": 3123,\r\n        \"nombre\": \"Jose\" ,\r\n        \"apellido\": \"Perez\",\r\n        \"email\": \"Jose@gmail.com\",    \r\n        \"fechaNacimiento\": \"2005-01-01\",\r\n        \"fechaIngreso\": \"2022-12-02\"\r\n    }\r\n\r\n",
+					"raw": "    {\r\n        \"nroDocumento\": 1,\r\n        \"nombre\": \"Jose\" ,\r\n        \"apellido\": \"Perez\",\r\n        \"email\": \"Jose@gmail.com\",    \r\n        \"fechaNacimiento\": \"2005-01-01\",\r\n        \"fechaIngreso\": \"2022-12-02\"\r\n    }\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -189,7 +189,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "localhost:8080/jornadas"
+				"url": "localhost:8080/jornada"
 			},
 			"response": []
 		},
@@ -199,13 +199,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/jornadas?fechaDesde=2024-08-05&fechaHasta=2024-08-25&nroDocumento=3123",
+					"raw": "localhost:8080/jornada?fechaDesde=2024-08-05&fechaHasta=2024-08-25&nroDocumento=3123",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"jornadas"
+						"jornada"
 					],
 					"query": [
 						{
@@ -231,13 +231,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/jornadas?nroDocumento=3123",
+					"raw": "localhost:8080/jornada?nroDocumento=3123",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"jornadas"
+						"jornada"
 					],
 					"query": [
 						{
@@ -255,13 +255,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/jornadas?fechaDesde=2024-08-05&fechaHasta=2024-08-25",
+					"raw": "localhost:8080/jornada?fechaDesde=2024-08-05&fechaHasta=2024-08-25",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"jornadas"
+						"jornada"
 					],
 					"query": [
 						{
@@ -283,13 +283,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/jornadas?fechaDesde=2024-08-05",
+					"raw": "localhost:8080/jornada?fechaDesde=2024-08-05",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"jornadas"
+						"jornada"
 					],
 					"query": [
 						{
@@ -307,13 +307,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/jornadas?fechaHasta=2024-08-25",
+					"raw": "localhost:8080/jornada?fechaHasta=2024-08-25",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"jornadas"
+						"jornada"
 					],
 					"query": [
 						{
