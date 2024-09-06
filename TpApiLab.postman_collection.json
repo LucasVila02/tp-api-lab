@@ -1,0 +1,329 @@
+{
+	"info": {
+		"_postman_id": "2aba487c-2251-44b5-8a9a-a8ad18289194",
+		"name": "TpApiLab",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27554086"
+	},
+	"item": [
+		{
+			"name": "createEmpleadoUno",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n    {\r\n        \"nroDocumento\": 3123,\r\n        \"nombre\": \"Jose\" ,\r\n        \"apellido\": \"Perez\",\r\n        \"email\": \"Jose@gmail.com\",    \r\n        \"fechaNacimiento\": \"2005-01-01\",\r\n        \"fechaIngreso\": \"2022-12-02\"\r\n    }\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/empleado"
+			},
+			"response": []
+		},
+		{
+			"name": "createEmpleadoDos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n    {\r\n        \"nroDocumento\": 123,\r\n        \"nombre\": \"Lucas\" ,\r\n        \"apellido\": \"Martinez\",\r\n        \"email\": \"Lucas@gmail.com\",    \r\n        \"fechaNacimiento\": \"2001-01-01\",\r\n        \"fechaIngreso\": \"2019-12-02\"\r\n    }\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/empleado"
+			},
+			"response": []
+		},
+		{
+			"name": "findAllEmpleado",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/empleado"
+			},
+			"response": []
+		},
+		{
+			"name": "findByIdEmpleado",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/empleado/1"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteEmpleado",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "localhost:8080/empleado/2"
+			},
+			"response": []
+		},
+		{
+			"name": "updateEmpleado",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"nroDocumento\": 3123,\r\n        \"nombre\": \"Jose\" ,\r\n        \"apellido\": \"Perez\",\r\n        \"email\": \"Jose@gmail.com\",    \r\n        \"fechaNacimiento\": \"2005-01-01\",\r\n        \"fechaIngreso\": \"2022-12-02\"\r\n    }\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/empleado/1"
+			},
+			"response": []
+		},
+		{
+			"name": "findConcepto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/concepto"
+			},
+			"response": []
+		},
+		{
+			"name": "findConceptosConNombre",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/concepto?nombre=libre",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"concepto"
+					],
+					"query": [
+						{
+							"key": "nombre",
+							"value": "libre"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findConceptoConNombreAndId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/concepto?nombre=libre&id=3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"concepto"
+					],
+					"query": [
+						{
+							"key": "nombre",
+							"value": "libre"
+						},
+						{
+							"key": "id",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createJornadaEmpleadoUno",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"idConcepto\":1,\r\n  \"idEmpleado\": 1,\r\n  \"fecha\": \"2024-08-12\",\r\n  \"hsTrabajadas\": 8\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/jornada"
+			},
+			"response": []
+		},
+		{
+			"name": "createJornadaEmpleadoDos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"idConcepto\":1,\r\n  \"idEmpleado\": 2,\r\n  \"fecha\": \"2024-08-01\",\r\n  \"hsTrabajadas\": 8\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/jornada"
+			},
+			"response": []
+		},
+		{
+			"name": "findAllJornadas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/jornadas"
+			},
+			"response": []
+		},
+		{
+			"name": "findJornadasAllParametros",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/jornadas?fechaDesde=2024-08-05&fechaHasta=2024-08-25&nroDocumento=3123",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"jornadas"
+					],
+					"query": [
+						{
+							"key": "fechaDesde",
+							"value": "2024-08-05"
+						},
+						{
+							"key": "fechaHasta",
+							"value": "2024-08-25"
+						},
+						{
+							"key": "nroDocumento",
+							"value": "3123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findJornadasConDocumento",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/jornadas?nroDocumento=3123",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"jornadas"
+					],
+					"query": [
+						{
+							"key": "nroDocumento",
+							"value": "3123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findJornadasDesdeAndHasta",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/jornadas?fechaDesde=2024-08-05&fechaHasta=2024-08-25",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"jornadas"
+					],
+					"query": [
+						{
+							"key": "fechaDesde",
+							"value": "2024-08-05"
+						},
+						{
+							"key": "fechaHasta",
+							"value": "2024-08-25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findJornadasDesde",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/jornadas?fechaDesde=2024-08-05",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"jornadas"
+					],
+					"query": [
+						{
+							"key": "fechaDesde",
+							"value": "2024-08-05"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findJornadasHasta",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/jornadas?fechaHasta=2024-08-25",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"jornadas"
+					],
+					"query": [
+						{
+							"key": "fechaHasta",
+							"value": "2024-08-25"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
