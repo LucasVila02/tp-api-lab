@@ -15,8 +15,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class ValidacionJornada {
@@ -77,7 +79,6 @@ public class ValidacionJornada {
                 throw new HorasTurnosInvalidoException("Las horas trabajadas no pueden ser nulas para el concepto: " + concepto.getNombre());
             }
         }
-
         // Aquí puedes continuar con la lógica de validación si horasTrabajadas no es null
         if (horasTrabajadas < concepto.getHsMinimo() || horasTrabajadas > concepto.getHsMaximo()) {
             throw new HorasTurnosInvalidoException(String.format("El rango de horas que se puede cargar para este concepto es de %d - %d",
@@ -87,10 +88,13 @@ public class ValidacionJornada {
 
 
     public void validarHorasDiarias(Empleado empleado, LocalDate fecha, Integer horasTrabajadas) {
-        List<Jornada> jornadasDelDia = jornadaRepository.findByEmpleadoIdAndFecha(empleado.getId(), fecha);
+//        List<Jornada> jornadasDelDia = jornadaRepository.findByEmpleadoIdAndFecha(empleado.getId(), fecha);
+        List<Jornada> jornadasDelDia = Optional.ofNullable(
+                jornadaRepository.findByEmpleadoIdAndFecha(empleado.getId(), fecha)
+        ).orElse(Collections.emptyList());
 
         // Calcular el total de horas trabajadas en el día
-        int horasTotalesDelDia = horasTrabajadas + jornadasDelDia.stream()
+        int horasTotalesDelDia = horasTrabajadas + jornadasDelDia.stream().filter(Objects::nonNull)
                 .mapToInt(Jornada::getHsTrabajadas)
                 .sum();
 
@@ -155,28 +159,31 @@ public class ValidacionJornada {
         if (esTurnoExtra && cantidadTurnosExtra >= 3) {
             throw new HorasTurnosInvalidoException("El empleado ingresado ya cuenta con 3 turnos extra esta semana.");
         }
+    }
 
+    public void validarTurnoJornada(LocalDate fecha, ConceptoLaboral conceptoLaboral, Empleado empleado) {
+        // Verifica si el concepto laboral es "Día libre" (ID 3 en este caso)
+        if (conceptoLaboral.getId() == 3) {
+            // Verifica si el empleado ya tiene una jornada laboral en esa fecha
+            if (tieneHorasDeTrabajo(empleado, fecha)) {
+                throw new HorasTurnosInvalidoException("El empleado ya tiene una jornada laboral registrada en esta fecha y no puede agregar un día libre.");
+            }
+        }
     }
 
     public void validarDiaLibre(Empleado empleado, LocalDate fecha) {
-        // Obtener jornadas del día para el empleado
-        List<Jornada> jornadasDelDia = jornadaRepository.findByEmpleadoIdAndFecha(empleado.getId(), fecha);
+        // Obtener las jornadas del día para el empleado
+        List<Jornada> jornadasDelDia = Optional.ofNullable(
+                jornadaRepository.findByEmpleadoIdAndFecha(empleado.getId(), fecha)
+        ).orElse(Collections.emptyList());
 
-        // Verificar si ya hay una jornada registrada en la fecha
-        boolean tieneHorasDeTrabajo1 = jornadasDelDia.stream()
-                .anyMatch(j -> (j.getEmpleado().getId() == 1L && j.getConceptoLaboral().getId() == 2L));
-
-        if (tieneHorasDeTrabajo1 ) {
-            throw new HorasTurnosInvalidoException("El empleado ya tiene una jornada de trabajo registrada en esta fecha y no puede agregar un día libre.");
-        }
-
-        // Verificar si ya tiene un día libre en la fecha
+        // Verificar si ya tiene un día libre registrado en la fecha
         boolean tieneDiaLibre = jornadasDelDia.stream()
                 .anyMatch(j -> j.getConceptoLaboral() != null
-                        && j.getConceptoLaboral().getId() == 3L);
+                        && j.getConceptoLaboral().getId() == 3L); // Día libre
 
         if (tieneDiaLibre) {
-            throw new HorasTurnosInvalidoException("El empleado ingresado cuenta con un día libre en esa fecha.");
+            throw new HorasTurnosInvalidoException("El empleado ingresado cuenta con un día libre en esa fecha");
         }
     }
 
@@ -195,8 +202,6 @@ public class ValidacionJornada {
         if (countTurnosNormales >= 5) {
             throw new HorasTurnosInvalidoException("El empleado ingresado ya cuenta con 5 turnos normales esta semana.");
         }
-
-
     }
 
     public void validarDiasLibresSemanales(Empleado empleado, LocalDate fecha) {
@@ -206,10 +211,9 @@ public class ValidacionJornada {
         List<Jornada> diasLibres = jornadaRepository.findByEmpleadoIdAndFechaBetweenAndConceptoLaboralNombre(
                 empleado.getId(), startOfWeek, endOfWeek, "Día Libre");
 
-        if (diasLibres.size() >= 2) {
+        if ( diasLibres.size() >= 2) {
             throw new HorasTurnosInvalidoException("El empleado no cuenta con más días libres esta semana.");
         }
-
     }
 
     public void validarDiasLibresMensuales(Empleado empleado, LocalDate fecha) {
@@ -238,6 +242,18 @@ public class ValidacionJornada {
         if (jornadaExistente) {
             throw new HorasTurnosInvalidoException("El empleado ya tiene registrado una jornada con este concepto en la fecha ingresada.");
         }
+    }
+
+    // Método auxiliar que verifica si el empleado tiene horas de trabajo en una fecha específica
+    private boolean tieneHorasDeTrabajo(Empleado empleado, LocalDate fecha) {
+        // Obtener las jornadas del día para el empleado
+        List<Jornada> jornadasDelDia = Optional.ofNullable(
+                jornadaRepository.findByEmpleadoIdAndFecha(empleado.getId(), fecha)
+        ).orElse(Collections.emptyList());
+
+        // Verificar si alguna de las jornadas tiene horas trabajadas en esa fecha
+        return jornadasDelDia.stream()
+                .anyMatch(j -> j.getHsTrabajadas() != null && j.getHsTrabajadas() > 0);
     }
 
 }

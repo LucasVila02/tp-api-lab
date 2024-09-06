@@ -47,7 +47,7 @@ public class JornadaServiceImplTest {
         jornada.setEmpleado(empleado); // Asignar el empleado
         jornada.setFecha(LocalDate.of(2023, 1, 4));
         jornada.setConceptoLaboral(conceptoLaboral); // Asignar el concepto
-        jornada.setHorasTrabajadas(7); // Asignar las horas trabajadas
+        jornada.setHsTrabajadas(7); // Asignar las horas trabajadas
     }
 
     @Test

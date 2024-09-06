@@ -21,7 +21,6 @@ public class EmpleadoControllerException  {
         });
 
         Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("timestamp", new Date());
         responseBody.put("status", HttpStatus.BAD_REQUEST.value());
         responseBody.put("errors", fieldErrors);
 
@@ -53,7 +52,6 @@ public class EmpleadoControllerException  {
 
     private ResponseEntity<Object> buildResponseEntity(HttpStatus status, String message) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("timestamp", new Date());
         responseBody.put("status", status.value());
         responseBody.put("message", message);
 

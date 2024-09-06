@@ -9,10 +9,9 @@ import lombok.*;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "concepto_laboral")
 public class ConceptoLaboral {
@@ -39,28 +38,5 @@ public class ConceptoLaboral {
         dto.setId(this.id);
         return dto;
     }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ConceptoLaboral that = (ConceptoLaboral) o;
-        return laborable == that.laborable && Objects.equals(id, that.id) && Objects.equals(nombre, that.nombre) && Objects.equals(hsMaximo, that.hsMaximo) && Objects.equals(hsMinimo, that.hsMinimo);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nombre, laborable, hsMaximo, hsMinimo);
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", laborable=" + laborable +
-                ", hsMaximo=" + hsMaximo +
-                ", hsMinimo=" + hsMinimo +
-                '}';
-    }
 }

@@ -116,7 +116,7 @@ public class EmpleadoServiceImplTest {
         });
 
         // Verificar el resultado
-        assertEquals("No se existe el empleado con Id: 3", exception.getMessage());
+        assertEquals("No existe el empleado con Id: 3", exception.getMessage());
     }
 
     @Test
@@ -185,7 +185,7 @@ public class EmpleadoServiceImplTest {
             empleadosServicesImplUnderTest.update(1L, empleadoDTO);
         });
         // Verificar el resultado
-        assertEquals("No se existe el empleado con Id: 1", exception.getMessage());
+        assertEquals("No existe el empleado con Id: 1", exception.getMessage());
 
     }
     @Test
@@ -222,6 +222,6 @@ public class EmpleadoServiceImplTest {
             empleadosServicesImplUnderTest.delete(1L);
         });
         // Verificar el resultado
-        assertEquals("No se existe el empleado con Id: 1", exception.getMessage());
+        assertEquals("No existe el empleado con Id: 1", exception.getMessage());
     }
 }

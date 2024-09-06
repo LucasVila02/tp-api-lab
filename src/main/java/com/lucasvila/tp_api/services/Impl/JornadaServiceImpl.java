@@ -86,6 +86,7 @@ public class JornadaServiceImpl implements JornadaServices {
     @Override
     public JornadaResponseDTO addJornada(JornadaRequestDTO jornadaDto) {
         boolean esTurnoExtra = jornadaDto.getConcepto() == 2L; // ID 2L es turno extra
+        boolean esDiaLibre = jornadaDto.getConcepto() ==3L;
 
         ConceptoLaboral concepto = conceptoLaboralRepository.findById(jornadaDto.getConcepto())
                 .orElseThrow(() -> new NoEncontradoException(jornadaDto.getConcepto(), "concepto"));
@@ -95,7 +96,14 @@ public class JornadaServiceImpl implements JornadaServices {
         Empleado empleado = empleadoRepository.findById(jornadaDto.getEmpleado())
                 .orElseThrow(() -> new NoEncontradoException(jornadaDto.getEmpleado(), "empleado"));
 
-        if (concepto.getId() != 3){
+        validacionJornada.validarRangoHoras(concepto, jornadaDto.getHsTrabajadas()); //ok
+        validacionJornada.validarDiaLibre(empleado, jornadaDto.getFecha());//ok
+        validacionJornada.validarTurnoJornada(jornadaDto.getFecha(), concepto, empleado);
+        validacionJornada.validarNumeroDeEmpleadosPorConcepto(concepto, jornadaDto.getFecha());//ok
+        validacionJornada.validarJornadaDuplicada(empleado, concepto, jornadaDto.getFecha());//ok
+        validacionJornada.validarTurnosNormalesSemanales(empleado, jornadaDto.getFecha());//ok
+
+        if (!esDiaLibre) {
             validacionJornada.validarHorasDiarias(empleado, jornadaDto.getFecha(), jornadaDto.getHsTrabajadas());//ok
             validacionJornada.validarHorasSemanales(empleado, jornadaDto.getHsTrabajadas(), jornadaDto.getFecha());//ok
             validacionJornada.validarHorasMensuales(empleado, jornadaDto.getHsTrabajadas(), jornadaDto.getFecha());//ok
@@ -104,13 +112,11 @@ public class JornadaServiceImpl implements JornadaServices {
             validacionJornada.validarTurnosExtraSemanales(empleado, jornadaDto.getFecha(), true);
         }
 
-        validacionJornada.validarRangoHoras(concepto, jornadaDto.getHsTrabajadas()); //ok
-        validacionJornada.validarDiaLibre(empleado, jornadaDto.getFecha());//ok
-        validacionJornada.validarTurnosNormalesSemanales(empleado, jornadaDto.getFecha());//ok
-        validacionJornada.validarDiasLibresSemanales(empleado, jornadaDto.getFecha());//funciona
-        validacionJornada.validarDiasLibresMensuales(empleado, jornadaDto.getFecha());//funciona
-        validacionJornada.validarNumeroDeEmpleadosPorConcepto(concepto, jornadaDto.getFecha());//ok
-        validacionJornada.validarJornadaDuplicada(empleado, concepto, jornadaDto.getFecha());//ok
+        if (esDiaLibre) {
+            validacionJornada.validarDiasLibresSemanales(empleado, jornadaDto.getFecha());//funciona
+            validacionJornada.validarDiasLibresMensuales(empleado, jornadaDto.getFecha());//funciona
+        };
+
 
         // Crear la entidad Jornada
         Jornada jornada = new Jornada();

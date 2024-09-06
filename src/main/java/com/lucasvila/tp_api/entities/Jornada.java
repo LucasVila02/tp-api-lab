@@ -2,19 +2,14 @@ package com.lucasvila.tp_api.entities;
 
 import com.lucasvila.tp_api.dto.JornadaResponseDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Jornada {
 
@@ -45,17 +40,4 @@ public class Jornada {
         return dto;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Jornada jornada = (Jornada) o;
-        return Objects.equals(id, jornada.id) && Objects.equals(conceptoLaboral, jornada.conceptoLaboral) && Objects.equals(empleado, jornada.empleado) && Objects.equals(fecha, jornada.fecha) && Objects.equals(hsTrabajadas, jornada.hsTrabajadas);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, conceptoLaboral, empleado, fecha, hsTrabajadas);
-    }
 }
