@@ -199,7 +199,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/jornada?fechaDesde=2024-08-05&fechaHasta=2024-08-25&nroDocumento=3123",
+					"raw": "localhost:8080/jornada?fechaDesde=2024-08-05&fechaHasta=2024-08-25&nroDocumento=1",
 					"host": [
 						"localhost"
 					],
@@ -218,7 +218,7 @@
 						},
 						{
 							"key": "nroDocumento",
-							"value": "3123"
+							"value": "1"
 						}
 					]
 				}
@@ -231,7 +231,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/jornada?nroDocumento=3123",
+					"raw": "localhost:8080/jornada?nroDocumento=2",
 					"host": [
 						"localhost"
 					],
@@ -242,7 +242,7 @@
 					"query": [
 						{
 							"key": "nroDocumento",
-							"value": "3123"
+							"value": "2"
 						}
 					]
 				}

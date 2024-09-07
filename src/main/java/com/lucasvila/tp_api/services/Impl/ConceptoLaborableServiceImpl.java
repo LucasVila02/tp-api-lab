@@ -24,6 +24,7 @@ public class ConceptoLaborableServiceImpl implements ConceptoLaborableServices {
 
         List<ConceptoLaboral> concepto;
 
+        /// Si se proporciona tanto un ID como un nombre, busca por ambos parámetros
         if (id != null && nombre != null) {
             concepto = repository.findByIdAndNombreContainingIgnoreCase(id, nombre);
         } else if (id != null) {
@@ -36,6 +37,7 @@ public class ConceptoLaborableServiceImpl implements ConceptoLaborableServices {
             concepto = repository.findAll();
         }
 
+        concepto.forEach(System.out::println);
         return concepto.stream().map(ConceptoLaboral::toDTO).collect(Collectors.toList());
 
     }

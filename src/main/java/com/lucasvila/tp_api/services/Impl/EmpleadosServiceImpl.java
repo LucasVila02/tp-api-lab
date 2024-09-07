@@ -48,6 +48,7 @@ public class EmpleadosServiceImpl implements EmpleadosServices {
                 .or(() -> {
                     throw new NoEncontradoException(id, "empleado");
                 });
+
     }
 
     @Transactional
@@ -60,6 +61,7 @@ public class EmpleadosServiceImpl implements EmpleadosServices {
 
         Empleado empleadoGuardado = empleadosRepository.save(empleadoDto.toEntity());
 
+        System.out.println(empleadoGuardado);
         return empleadoGuardado.toDTO();
     }
 
@@ -81,6 +83,7 @@ public class EmpleadosServiceImpl implements EmpleadosServices {
 
             Empleado empleadoUpdate = empleadosRepository.save(empleado);
 
+            System.out.println(empleadoUpdate);
             return Optional.of(empleadoUpdate.toDTO());
     }
 
@@ -94,6 +97,7 @@ public class EmpleadosServiceImpl implements EmpleadosServices {
         if (jornadaRepository.existsByEmpleadoId(id)) {
             throw new BadRequestException("No es posible eliminar un empleado con jornadas asociadas.");
         }
+        System.out.println(empleado);
         empleadosRepository.delete(empleado);
     }
 

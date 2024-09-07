@@ -27,7 +27,6 @@ public class JornadaController {
             @RequestParam(required = false)  String fechaHasta,
             @RequestParam(required = false) String nroDocumento) {
 
-            // Llamar al método unificado
             List<Jornada> jornadas = services.findJornadas(fechaDesde, fechaHasta, nroDocumento);
 
             List<JornadaResponseDTO> jornadaResponseDTOs = jornadas.stream()
@@ -40,10 +39,8 @@ public class JornadaController {
     @PostMapping("/jornada")
     public ResponseEntity<JornadaResponseDTO> crearJornada(@Valid @RequestBody JornadaRequestDTO jornadaRequestDTO) {
 
-        // Llama al servicio para agregar la jornada y obtener el DTO de respuesta
         JornadaResponseDTO jornadaResponseDTO = services.addJornada(jornadaRequestDTO);
 
-        // Retorna el DTO de respuesta con un código de estado 201 (CREATED)
         return new ResponseEntity<>(jornadaResponseDTO, HttpStatus.CREATED);
     }
 

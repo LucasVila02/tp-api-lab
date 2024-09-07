@@ -15,11 +15,12 @@ public class EmpleadoControllerException  {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request) {
+        // Mapa para almacenar los errores de validación de cada campo.
         Map<String, String> fieldErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             fieldErrors.put(error.getField(), error.getDefaultMessage());
         });
-
+        // Cuerpo de la respuesta que incluye el estado y los errores de los campos.
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("status", HttpStatus.BAD_REQUEST.value());
         responseBody.put("errors", fieldErrors);
@@ -39,6 +40,7 @@ public class EmpleadoControllerException  {
     public ResponseEntity<Object> handleBussinessException(RuntimeException ex, WebRequest request) {
         HttpStatus status;
 
+        // Asigna el código de estado basado en el tipo de excepción.
         if (ex instanceof EmpleadoDuplicadoException) {
             status = HttpStatus.CONFLICT;
         } else if (ex instanceof NoEncontradoException || ex instanceof NroDocumentoInvalidoException) {

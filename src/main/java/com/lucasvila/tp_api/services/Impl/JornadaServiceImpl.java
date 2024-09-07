@@ -79,6 +79,7 @@ public class JornadaServiceImpl implements JornadaServices {
                 .findFirst()
                 .orElse(criterios.get("default"))
                 .get();
+
     }
 
 
@@ -127,6 +128,8 @@ public class JornadaServiceImpl implements JornadaServices {
 
         // Guardar la jornada y mapear a DTO de respuesta
         jornada = jornadaRepository.save(jornada);
+
+        System.out.println(jornada);
 
         return jornada.toResponseDTO();
     }
